@@ -1,5 +1,0 @@
-django==3.2.5
-djangorestframework==3.12.4
-flake8==3.9.2
-pyserial==3.5
-pytest==6.2.4

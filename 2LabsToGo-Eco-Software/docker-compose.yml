@@ -15,7 +15,6 @@ services:
     image: ocmanager/ocmanager4:arm64
     depends_on:
       - redis
-    env_file: oc_manager_v3.env
     environment:
       - UDEV=1
       - DJANGO_SETTINGS_MODULE=app.settings

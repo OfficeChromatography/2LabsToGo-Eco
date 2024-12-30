@@ -21,7 +21,7 @@ class InstallationProcess:
 
     def __init__(self) -> object:
         self.version = 1.0
-        self.main_title = "\n\t WELCOME TO OC-MANAGER INSTALLATION PROCESS\n"
+        self.main_title = "\n\t WELCOME TO 2LabsToGo-Eco-Software INSTALLATION PROCESS\n"
         # The commands should be written as a list of strings, otherwise could fail.
         # Don't try to run RAW strings instead of list, if your string uses user input,
         # as they may inject arbitrary code!
@@ -29,7 +29,7 @@ class InstallationProcess:
         self.command = {
             "update": ["sudo", "apt-get", "update"],
             "upgrade": ["sudo", "apt-get", "upgrade", "-y"],
-            "pip3": ['sudo', 'apt', 'install', 'python3-pip', '-y'],
+            "pip3": ['sudo', 'apt-get', 'install', 'python3-pip', '-y'],
             "curl": ['sudo', 'apt-get', 'install', 'curl', '-y'],
             "docker download": ["sudo", "curl", "-fsSL", "https://get.docker.com", "-o", "get-docker.sh"],
             "docker installation": ["sudo", "sh", "get-docker.sh"],
@@ -37,6 +37,7 @@ class InstallationProcess:
             "install_docker_compose": ["sudo", "pip3", "install", "docker-compose"],
             "install_libraries": ["sudo", "apt-get", "install", "-y", "libffi-dev", "libssl-dev"],
             "creating media folder": ["mkdir", "app/media"],
+            "autoremove": ['sudo', 'apt-get', 'autoremove', '-y'],
         }
 
         print(self.main_title)
