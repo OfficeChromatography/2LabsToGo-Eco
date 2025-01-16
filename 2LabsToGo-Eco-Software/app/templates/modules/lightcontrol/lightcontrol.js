@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-  var isLightOn = false; // Track the state of the light
+  var isLightOn = true; // Track the state of the light
 
   function sendToMachine(value) {
     var data = {'gcode': value};
