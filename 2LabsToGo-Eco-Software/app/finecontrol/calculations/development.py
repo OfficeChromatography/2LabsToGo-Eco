@@ -80,6 +80,7 @@ def GcodeGenDevelopment(start_point, length, z_movement, applications, print_bot
         # moving to the end of the line
         if (x % 2) == 0:
             generate.pressurize(pressure)
+            generate.wait_ms(200)
             generate.open_valve()
             for speed_factor in speed_factors:
                 generate.linear_move_xz(round(length / len(speed_factors), 3),
@@ -93,6 +94,7 @@ def GcodeGenDevelopment(start_point, length, z_movement, applications, print_bot
         else:
             if print_both_ways == 'True':
                 generate.pressurize(pressure)
+                generate.wait_ms(200)
                 generate.open_valve()
                 for speed_factor in speed_factors:
                     generate.linear_move_xz(-1 * round(length / len(speed_factors), 3),
