@@ -3,9 +3,8 @@
 $fn=80;
 d=11; // d pulley
 
-x_axis_cart_tensioner();
-//tensioner();
-pusher();
+x_axis_cart_tensioner();  //to be printed
+//tensioner();  //to be printed
 
 module x_axis_cart_tensioner() {
 difference() {
@@ -14,7 +13,6 @@ difference() {
         translate([20, 20, 4.5]) cube([24.5, 10, 12]);      
     }
     translate([22.5, 27+3, 16.5-3]) rotate([90, 0, 0]) cylinder(d1=2.7, d2=2.4, h=10);
-    //translate([21.5, 37-3, 16.5-3]) rotate([90, 0, 0]) cylinder(d=5.6, h=10);
     translate([23-0.7, 15, 16.5-6]) cube([1.4, 16, 10]);
     translate([32.25+d/2-1.5, 15, 16.5-7]) cube([3, 16, 10]);
     
@@ -25,7 +23,7 @@ difference() {
     translate([32.25, 35, 10]) rotate([90, 0, 0]) cylinder(d=3.2, h=30);
     translate([32.25, 35+3, 10]) rotate([90, 0, 0]) cylinder(d=6.1, h=8+6, $fn=6);
     
-    //hols for screws
+    //holes for screws
     translate([64.5-22, 5.1, -1]) cylinder(d=2.7, h=10);
     translate([64.5-22, 27-4.1, -1]) cylinder(d=2.7, h=10);
     translate([64.5-22-20, 5.1, -1]) cylinder(d=2.7, h=10);
@@ -67,7 +65,6 @@ difference() {
 translate([20, 1, 4.5]) cube([24, 10, 12]);
     translate([32.25-d/2-2, 30.5, 16.5-6]) rotate([0, 0, -90]) timing_belt();
     translate([22.5, 11, 16.5-3]) rotate([90, 0, 0]) cylinder(d1=2.4, d2=2.7, h=10);
-    //translate([23, 1+3, 16.5-3]) rotate([90, 0, 0]) cylinder(d=5.6, h=9);
     translate([23-0.7, -5, 16.5-6]) cube([1.4, 17, 10]);
     translate([32.25+d/2-1.5, -5, 16.5-7]) cube([3, 26, 10]);
     translate([32.25, 25, 10]) rotate([90, 0, 0]) cylinder(d=3.2, h=30);
