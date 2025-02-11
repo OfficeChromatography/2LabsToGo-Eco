@@ -12,8 +12,9 @@ pd=6.3; //profile depth
 //right_back();
 //left_front();
 //left_back();
-//back();
+back();
 //top_front();
+//top_front_fan();
 //top_back();
 //top_back_cable_channel();
 //top_back_cover();
@@ -28,9 +29,17 @@ pd=6.3; //profile depth
 //color("blue", 0.5) {rotate([-90, 0, 90]) translate([8, -15, -80]) cable_support();} //electronic box
 //cable_support();
 //translate([202, 10, 14.5]) rotate([0, 180, 0]) cable_support();
-scratching_aid_magnets_front();
+//scratching_aid_magnets_front();
 
 //bohrschablone();
+
+module top_front_fan() {
+difference() {
+import("frame_top_front.stl");
+    translate([71.75-0.5, 7.5, -1]) cube([81, 80, 10]);
+}
+}
+
 
 module bohrschablone() {
     w=y1+2*pd;
@@ -181,6 +190,12 @@ module back() {
         translate([6+i*n2, 6, -4]) cylinder(d=2.8, h=12); 
     for (i=[0:2])
         translate([6+i*n2, h-2*pd-6, -4]) cylinder(d=2.8, h=12);
+    
+    //additional holes for rF-box
+    translate([58, 6, -4]) cylinder(d=2.8, h=12);
+    translate([54, 184, -4]) cylinder(d=2.8, h=12);
+    
+    
     //cut in 2 parts: -10 to 100, 100 to 230
         //translate([100, -10, -5]) cube([130, 250, 20]);
     string1 = str("top-back");
@@ -211,7 +226,7 @@ module top_front() {
     difference() {
         translate([b, 89, 5]) cube([189, 7, 7]);
         //translate([b-1, 90, 5]) rotate([45, 0, 0]) cube([191, 11, 7]);
-        translate([b-1, 90-11, 5]) rotate([0, 0, 0]) cube([191, 11, 7]);
+        translate([b-1, 90-1, 5]) rotate([45, 0, 0]) cube([191, 11, 7]);
     }
 }
 
