@@ -1,0 +1,6 @@
+[Unit]
+Description="Runs my demo backup sh script"
+
+[Service]
+ExecStart=/etc/systemd/system/backup_sd.sh
+

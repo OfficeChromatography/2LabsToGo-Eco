@@ -1,0 +1,10 @@
+[Unit]
+Description=My backup job timer
+
+[Timer]
+OnCalendar=*-*-* 20:00:00
+Unit=/etc/systemd/system/backup_db.service
+Persistent=true
+
+[Install]
+WantedBy=multi-user.target
