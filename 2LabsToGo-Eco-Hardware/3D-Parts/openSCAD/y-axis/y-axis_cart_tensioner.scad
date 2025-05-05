@@ -25,8 +25,8 @@ module y_axis_cart() {
         //holes for plate holder screws
         translate([20, 21.5, -1]) cylinder(r=5.8, h=4.5);
         translate([120-20, 21.5, -1]) cylinder(r=5.8, h=4.5);
-        translate([20, 90-8.5, -1]) cylinder(r=5.8, h=4.5);
-    translate([120-20, 90-8.5, -1]) cylinder(r=5.8, h=4.5);
+        translate([20, 95-8.5, -1]) cylinder(r=5.8, h=4.5);
+    translate([120-20, 95-8.5, -1]) cylinder(r=5.8, h=4.5);
         
         //screw for tensioneer
             translate([60+15, 59, -1]) rotate([0, 0, 0]) cylinder(d=2.7, h=20);
@@ -58,8 +58,8 @@ module y_axis_cart() {
     translate([12+76, 56, 2]) bearing();
     }
     //holes for plate holder screws
-    translate([20, 90-8.5, -1]) cylinder(r=5.8, h=4.5);
-    translate([120-20, 90-8.5, -1]) cylinder(r=5.8, h=4.5);
+    translate([20, 95-8.5, -1]) cylinder(r=5.8, h=4.5);
+    translate([120-20, 95-8.5, -1]) cylinder(r=5.8, h=4.5);
 }
     //tip for endstop
     translate([120-12, 90-10, 7]) cube([12, 10, 12]);
