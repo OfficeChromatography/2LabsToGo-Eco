@@ -12,7 +12,7 @@ ser = serial.Serial('/dev/ttyAMA1', 115200)
 time.sleep(1)
 
 command(ser, "G28Y\r\n")
-command(ser, "G0Y158F2000\r\n")   #photo position???? 
+command(ser, "G0Y158F3000\r\n")   #photo position???? 
 command(ser, "M400\r\n")
 
 ser.close()

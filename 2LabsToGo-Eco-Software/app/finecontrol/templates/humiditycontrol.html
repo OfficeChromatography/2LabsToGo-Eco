@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+  {% include 'modules/basics/head.html' %}
+  <title>Humidity control</title>
+</head>
+
+<body id="page-top">
+
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    {% include 'sidebar.html' %}
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <!-- Topbar -->
+        {% include 'topbar.html' %}
+        <!-- End of Topbar -->
+
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Humidity Control</h1>
+          </div>
+          <!-- Content Row -->
+          <div class="row">
+            <!-- Content Column -->
+            <div class="col-lg-6">
+              <!-- Manual -->
+              <div class="card shadow mb-4 ">
+                <div class="card-header py-3">
+                    <div class="d-flex flex-row justify-content-between align-items-center">
+                      <h6 class="m-0 font-weight-bold text-primary">Settings</h6>
+                      <button title='Minimize the Window' id='minimize-manual' class="btn btn-link" data-toggle="collapse" data-target="#manualcontent" aria-expanded="true" aria-controls="collapseOne"><i class="far fa-window-minimize"></i></button>
+                    </div>
+                </div>
+                <div class="card-body show" id='manualcontent'>
+                  {% include 'modules/humiditycontrol/humiditycontrol.html' %}
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 mb-4" style="min-height:400px">
+              {% include 'modules/monitor/monitor.html' %}
+            </div>
+          </div>
+
+          
+
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      {% include 'footer.html' %}
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+  {% include 'modules/csrftoken/csrftoken.html' %}
+  <!-- Logout Modal-->
+  {% include 'modules/logout/logoutmodal.html' %}
+  <script src="{% static 'js/sb-admin-2.js' %}"></script>
+  <script src="{% static 'js/oclab/motorcontrol.js' %}"></script>
+  <script src="{% static 'js/oclab/topbar.js' %}"></script>
+</body>
+
+</html>

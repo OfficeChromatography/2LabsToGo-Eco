@@ -34,7 +34,7 @@ def basic_conf():
                   'auto_exposure': 0,
                   'exposure_time_absolute': 0.025,
                   'white_balance_auto_preset': 1,
-                  'analogue_gain': 'Off',
+                  'analogue_gain': 1,
                   'colour_gains': '1.0,1.0',
                   'imagenumber': 1,
                   'delaytime': 0,
@@ -55,10 +55,8 @@ def get_metadata(image_in_Db):
     dic = {}
     img_data = ""
     for tag_id in exifdata:
-        # get the tag name, instead of human unreadable tag id
         tag = TAGS.get(tag_id, tag_id)
         data = exifdata.get(tag_id)
-        # decode bytes
         if isinstance(data, bytes):
             data = data.decode()
         img_data += f"{tag}: {data}\n"
@@ -86,7 +84,6 @@ class PhotoShootManager:
         self.led_config_form = LedsControlsForm(request.POST or None)
 
         self.id = request.POST.get("selected-element-id")
-        
         self.import_mode = request.session.get('imported_form_data') is not None
 
         if self.import_mode:
@@ -117,10 +114,9 @@ class PhotoShootManager:
             return False
 
     def set_camera_configurations(self, color_dict):
-
         if not self.are_shoot_options_correct():
-            raise ValueError("One or more forms are not valid. Cannot set camera configurations.")
-        
+            raise ValueError("One or more forms are not valid.")
+
         self.visible_leds.set_rgb(
             color_dict['red'],
             color_dict['green'],
@@ -128,28 +124,58 @@ class PhotoShootManager:
             self.led_config_form.cleaned_data['white'],
         )
 
-        # Set the camera Configurations
-        for key, value in self.camera_config_form.cleaned_data.items():
-            if((key == 'auto_exposure' and value == 1)):
-                self.camera.set_camera_control(key, value)
+        ae_value = self.camera_config_form.cleaned_data['auto_exposure']
 
-        for key, value in self.camera_config_form.cleaned_data.items():
-            if((key == 'auto_exposure' and value == 0)):
-                self.camera.set_camera_control(key, value)
-                for key, value in self.user_config_form.cleaned_data.items():
-                    self.camera.set_camera_property(key, value)
-                for key, value in self.camera_config_form.cleaned_data.items():
-                    self.camera.set_camera_property(key, value)
-                    if((key == 'white_balance_auto_preset')):
-                        self.camera.set_camera_property_awb(key, value)
-                        if((value == 7)):
-                            for key, value in self.camera_config_form.cleaned_data.items():
-                                if((key == 'colour_gains')):
-                                    self.camera.set_camera_property_colour_gains(key, value)
-                                time.sleep(1)
-                time.sleep(1)
-        time.sleep(1)
-        
+        self.camera.set_camera_control('auto_exposure', ae_value)
+        time.sleep(0.5)
+        if ae_value == 0:
+
+            try:
+                self.camera.picam2.stop()
+            except Exception:
+                pass  
+
+            self.camera.set_resolution()
+            self.camera.picam2.set_controls({"AeEnable": False})
+            time.sleep(0.5)  
+
+            for key, value in self.user_config_form.cleaned_data.items():
+                self.camera.set_camera_property(key, value)
+
+            for key, value in self.camera_config_form.cleaned_data.items():
+                self.camera.set_camera_property(key, value)
+
+                if key == 'white_balance_auto_preset':
+                    self.camera.set_camera_property_awb(key, value)
+                    if value == 7:
+                        for key2, val2 in self.camera_config_form.cleaned_data.items():
+                            if key2 == 'colour_gains':
+                                self.camera.set_camera_property_colour_gains(key2, val2)
+
+            self.camera.picam2.start()
+            time.sleep(0.5)
+        else:
+            self.camera.set_resolution()
+            self.camera.picam2.start()
+            time.sleep(0.5)
+
+            self.camera.picam2.set_controls({"AeEnable": True})
+            time.sleep(1.5) 
+            for i in range(2):
+                try:
+                    metadata = self.camera.picam2.capture_metadata()
+                    print(f"Metadata AE #{i+1}: Exposure={metadata.get('ExposureTime')}, Gain={metadata.get('AnalogueGain')}")
+                except Exception as e:
+                    print(f"❌ Error AE #{i+1}: {e}")
+                time.sleep(0.4)
+
+        self.camera.picam2.stop()
+                    
+        try:
+            self.camera.picam2.stop()
+        except Exception as e:
+            print("⚠️ Camera could not be stopped.", e)
+
         self.camera.set_resolution()
 
     def shoot(self):
@@ -162,6 +188,7 @@ class PhotoShootManager:
         file_format = self.format_config_form.cleaned_data['pixelformat']
         image_number = self.camera_config_form.cleaned_data['imagenumber']
         delay_time = self.camera_config_form.cleaned_data['delaytime']
+
         self.path_photo = self.camera.shoot(file_format, image_number, delay_time)
 
         self.nm_255.set_power(0)
@@ -193,9 +220,9 @@ class PhotoShootManager:
                     image.image.save(os.path.basename(path_photo), File(f))
                     image.filename = image.file_name()
                     image.uploader = self.user
-                    image.user_conf = self.user_config_form.save()
-                    image.leds_conf = self.led_config_form.save()
-                    image.camera_conf = self.camera_config_form.save()
+                    image.user_conf = None
+                    image.leds_conf = None
+                    image.camera_conf = None
 
                     if method_instance:
                         image.method = method_instance

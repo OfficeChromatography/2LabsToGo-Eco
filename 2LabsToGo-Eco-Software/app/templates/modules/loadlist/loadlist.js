@@ -1,5 +1,5 @@
 class listOfSaved{
-    constructor(save_url, list_url, get_url, saveEvent, loadEvent, delete_app_url){
+    constructor(save_url, list_url, get_url, saveEvent, loadEvent, delete_app_url,list_option){
         this.save_url = save_url;
         this.list_url = list_url;
         this.get_url = get_url;
@@ -11,14 +11,59 @@ class listOfSaved{
         this.$click_new_button_handler()
         this.$click_save_button_handler()
         this.$click_export_button_handler()
-
+        this.type_list = list_option;
+        this.saveIDs=[];
     }
-
     $renderListInScreen = (elements) => {
         // Render list of saved in screen
-        this.$cleanList()
-        elements.forEach(element => this.$addToList(element))
+        
+        if(this.type_list === "autosampler")
+        {
+            this.$cleanList()
+            elements.forEach(element =>{ 
+                if((element[2][0]===1) && (element[2][1]===0.3) && (element[2][3]===1)){
+                    this.$addToList(element)
+                 }
+               
+            })
+        }
+        else if (this.type_list === "development")
+        {
+            
+            this.$cleanList()
+            elements.forEach(element =>{ 
+                if((element[2][0]===0.3) && (element[2][1]===1)){
+                    this.$addToList(element)
+                 }
+            })
+        }
+        else if (this.type_list === "detection")
+            {
+                this.$cleanList()
+                elements.forEach(element =>{ 
+                    if((element[2][0]===0.3) && (element[2][1]===0.3)){
+                        this.$addToList(element)
+                     }
+                })
+            }
+        else if (this.type_list === "syringe_pump")
+            {
+                this.$cleanList()
+                elements.forEach(element =>{ 
+                    if((element[2][0]===1) && (element[2][1]===0.3) && (element[2][3]===0)){
+                        this.$addToList(element)
+                        }
+                })
+            }
+        else {
+            this.$cleanList()
+            elements.forEach(element => this.$addToList(element))
+                   
+            }
+        
+
     }
+    
 
     $afterListRendered = () =>{
         // After rendering, load the first or create a new method
@@ -102,11 +147,27 @@ class listOfSaved{
     }
 
     $click_new_button_handler(){
+        
         $("#new_method_bttn").on("click",function(){
+            if ($('#notestextarea').length) {
+                $('#notestextarea').val(''); 
+                $('#image_id').attr('src', $('#image_id').data('default-src'));
+                $('#image_id').attr('alt', 'Imagen por defecto');
+            }
+            
+        if ($('#waitingTimeTableBody').length) {
+            
+            if (table_obj) {
+                table_obj.waitingTimesData = []; 
+                table_obj.generateEmptyRows();  
+            }
+        }
+            $('#new_filename').prop('readonly', false);
             $("#list-load").find("a.active").removeClass("active")
             $('#new_filename').val("")
             $('#selected-element-id').val("")
-        })
+        }
+    )
     }
 
     $click_save_button_handler(){
@@ -114,6 +175,7 @@ class listOfSaved{
             e.preventDefault()
             let data = this.saveEvent()
             this.$save(data)
+            $('#new_filename').prop('readonly', true);
         })
     }
 
@@ -134,10 +196,12 @@ class listOfSaved{
             })
             .done(() => {
                 object.parent().remove(); // Remove the list item from the DOM
+                this.loadList();
             })
             .fail()
             .always();
         }
+        
     }
     
     $delete_element_completely(object) {
@@ -149,6 +213,7 @@ class listOfSaved{
             })
             .done(() => {
                 object.parent().remove(); 
+                this.loadList();
             })
             .fail()
             .always();
@@ -172,27 +237,47 @@ class listOfSaved{
             this.$exportToCsv();
         })
     }
-    
     $exportToCsv = function () {
         let data = this.saveEvent();
         let sentencias = data.replaceAll('&', '\n');
         sentencias = sentencias.replaceAll('=', ',');
         
         if (window.location.pathname.includes('development')) {
-            let waitingTimes = table_obj.getValues(); 
-            sentencias += '\n\nWaiting Time Data';
-            waitingTimes.forEach((wt, index) => {
-                sentencias += `\napplication_${index + 1},${wt.waitingTime}`;
-            });
+            const urlParams = new URLSearchParams(data);
+            const waitingTimesEncoded = urlParams.get('waitingTimes');  
+            let waitingTimes = [];
+            if (waitingTimesEncoded) {
+                try {
+                    waitingTimes = JSON.parse(decodeURIComponent(waitingTimesEncoded));
+                } catch (error) {
+                    console.error("Error al decodificar waitingTimes:", error);
+                }
         }
+    sentencias = sentencias.replaceAll('=', ',');
+    sentencias = sentencias.split('\n').filter(line => !line.startsWith('waitingTimes,')).join('\n');
 
+    if (waitingTimes.length > 0) {
+        sentencias += '\n\nWaiting Time Data';
+
+        waitingTimes.forEach((wt, index) => {
+            sentencias += `\napplication_${wt.application},${wt.waitTime}`;
+        });
+    } else {
+        console.error("No se encontraron datos de waitingTimes");
+    }
+    
+        }
+    
         var hiddenElement = document.createElement('a');
         hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(sentencias);
         hiddenElement.target = '_blank';
         hiddenElement.download = 'output.csv';
         hiddenElement.click();
     };
+    
+    
 }
+
 
 
 

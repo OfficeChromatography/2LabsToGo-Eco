@@ -20,56 +20,55 @@ class SampleView(FormView):
     def get(self, request):
         """Manage the HTML view in SampleApp"""
         OC_LAB.send(f'M92Z400')
-        OC_LAB.send(f'M203Z40') #speed syringe pump  
-        OC_LAB.send(f'M42P49S0') #switch motor and endstop
-        OC_LAB.send(f'M42P36S0') #valve for AS
+        OC_LAB.send(f'M203Z40')   
+        OC_LAB.send(f'M42P49S0')
+        OC_LAB.send(f'M42P36S0')
+        OC_LAB.send(f'G28ZYX')        
         return render(request,'sample.html',{})
 
 class SyringeView(FormView):
     def get(self, request):
         """Manage the HTML view in SampleApp"""
-        OC_LAB.send(f'M92Z1600') #syringe pump pitch (400 for autosampler , 2133 for K)
-        OC_LAB.send(f'M203Z5') #speed syringe pump  
-        OC_LAB.send(f'M42P49S255') #switch motor and endstop
-        OC_LAB.send(f'M42P36S255') #valve for SP
+        OC_LAB.send(f'M92Z1600')
+        OC_LAB.send(f'M203Z5')  
+        OC_LAB.send(f'M42P49S255')
+        OC_LAB.send(f'M42P36S255')
+        OC_LAB.send(f'G28YX')
         return render(request,'samplesp.html',{})
 
 class SampleDelete(View):
 
     def delete(self, request, id):
         apps = SampleApplication_Db.objects.filter(method=Method_Db.objects.get(pk=id))
+        Method_Db.objects.get(pk=id).delete()
         apps.delete()
-        return JsonResponse({})
+        return JsonResponse({'message':'Data !!'})
 
 class SampleDetails(View):
-
-    def delete(self, request, id):
-        Method_Db.objects.get(pk=id).delete()
-        return JsonResponse({})
-
     def get(self, request, id):
-        """Loads an object specified by ID"""
-        id_object = id
-        response = {}
-        method = Method_Db.objects.get(pk=id_object)
-        if not SampleApplication_Db.objects.filter(method=method):
-            response.update({"filename":getattr(method,"filename")})
-            response.update({"id":id_object})
-        else:
-            
-            sample_config = SampleApplication_Db.objects.get(method=method)
-            response.update(model_to_dict(sample_config.pressure_settings.get(), exclude=["id",]))
-            response.update(model_to_dict(sample_config.plate_properties.get(), exclude=["id",]))
-            response.update(model_to_dict(sample_config.band_settings.get(), exclude=["id",]))
-            response.update(model_to_dict(sample_config.zero_properties.get(), exclude=["id",]))
-            response.update(model_to_dict(sample_config.movement_settings.get(), exclude=["id",]))
-            response.update(model_to_dict(method))
+            """Loads an object specified by ID"""
+            id_object = id
+            response = {}
+            method = Method_Db.objects.get(pk=id_object)
+            if not SampleApplication_Db.objects.filter(method=method):
+                response.update({"filename":getattr(method,"filename")})
+                response.update({"id":id_object})
+            else:
+                
+                sample_config = SampleApplication_Db.objects.get(method=method)
+                response.update(model_to_dict(sample_config.pressure_settings.get(), exclude=["id",]))
+                response.update(model_to_dict(sample_config.plate_properties.get(), exclude=["id",]))
+                response.update(model_to_dict(sample_config.band_settings.get(), exclude=["id",]))
+                response.update(model_to_dict(sample_config.zero_properties.get(), exclude=["id",]))
+                response.update(model_to_dict(sample_config.movement_settings.get(), exclude=["id",]))
+                response.update(model_to_dict(method))
 
-            bands_components = BandsComponents_Db.objects.filter(sample_application=sample_config.id).values()
-            response.update({'bands_components': [entry for entry in bands_components]})
+                bands_components = BandsComponents_Db.objects.filter(sample_application=sample_config.id).values()
+                response.update({'bands_components': [entry for entry in bands_components]})
 
-        return JsonResponse(response)
+            return JsonResponse(response)
 
+ 
     def post(self, request):
         """Save and Update Data"""
         id = request.POST.get("selected-element-id")
@@ -134,8 +133,10 @@ class SampleDetails(View):
 
         return JsonResponse({'message':'Data !!'})
 
+
 class SampleAppPlay(View):
     def post(self, request):
+        
         # Run the form validations and return the clean data
         forms_data = data_validations(
             plate_properties=PlateProperties_Form(request.POST),
@@ -153,10 +154,12 @@ class SampleAppPlay(View):
 
         # Printrun
         OC_LAB.print_from_list(gcode)
+        
         return JsonResponse({'error':'f.errors'})
 
 class CalcVol(View):
     def post(self, request):
+        
         forms_data = data_validations(
             plate_properties_form=PlateProperties_Form(request.POST),
             band_settings_form=BandSettings_Form(request.POST),
@@ -164,7 +167,7 @@ class CalcVol(View):
             pressure_settings_form=PressureSettings_Form(request.POST),
             zero_position_form=ZeroPosition_Form(request.POST)
         )
-
+        
         try:
             table_json = request.POST.get('table', '{}') 
             table_data = json.loads(table_json)
@@ -175,6 +178,7 @@ class CalcVol(View):
         try:
             data = SimpleNamespace(**forms_data)
             results = calculate_volume_application_infoAS(data)
+            
             return JsonResponse({'results': results})
         except TypeError as e:
             return JsonResponse({'error': str(e)}, status=500)
@@ -183,14 +187,12 @@ class SampleDeleteSP(View):
 
     def delete(self, request, id):
         apps = SampleApplication_Db.objects.filter(method=Method_Db.objects.get(pk=id))
+        Method_Db.objects.get(pk=id).delete()
         apps.delete()
         return JsonResponse({})
 
 class SampleDetailsSP(View):
 
-    def delete(self, request, id):
-        Method_Db.objects.get(pk=id).delete()
-        return JsonResponse({})
 
     def get(self, request, id):
         """Loads an object specified by ID"""

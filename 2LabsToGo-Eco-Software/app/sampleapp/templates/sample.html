@@ -3,16 +3,16 @@
 {% load static %}
 <head>
 
-  <!--{% include 'modules/basics/head.html' %}-->
+  {% include 'modules/basics/head.html' %}
   <title>Autosampler</title>
-
+  
   <!-- Chart.js-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js" charset="utf-8"></script>
 
 
 </head>
 <body id="page-top" onload="mainCalculations()">
-
+  
   <!-- Page Wrapper -->
   <div id="wrapper">
 
@@ -87,15 +87,15 @@
                 <div class="card-body d-flex flex-column">
                       {% include 'modules/loadlist/loadlist.html' %}
                       <br>
-                      <div class="form-group">
+                      <!-- <div class="form-group">
                         <input type="file" id="import-csv" accept=".csv" class="form-control">
                         <button id="import-csv-btn" class="btn btn-primary mt-2">Import CSV</button>
-                      </div>
+                      </div> -->
 
                       <div class="container-fluid">
                           <div class="row">
                               <div class="col">
-                                  {% include 'modules/applicationcontrol/applicationcontrol.html' %}
+                                  {% include 'modules/applicationcontrol/applicationcontrolas.html' %}
                               </div>
                           </div>
                       </div>
@@ -163,6 +163,7 @@
   <script src="{% static 'js/sb-admin-2.js' %}"></script>
   <script src="{% static 'js/oclab/topbar.js' %}"></script>
   <script src="{% static 'js/oclab/sample.js' %}"></script>
+
   {% include 'modules/csrftoken/csrftoken.html' %}
 </body>
 

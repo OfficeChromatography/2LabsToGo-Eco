@@ -38,15 +38,15 @@ class Camera:
             if num_pict > 1:
                 self.picam2.set_controls({"AeEnable": False})
                 time.sleep(30)
-                print("metadata1", metadata["ExposureTime"], metadata["ColourGains"], metadata["AnalogueGain"])
+                print("metadata 1:", " ExposureTime ", metadata["ExposureTime"], " ColourGains ", metadata["ColourGains"], " AnalogueGain ", metadata["AnalogueGain"])
                 
             else:
-                print("metadata1", metadata["ExposureTime"], metadata["ColourGains"], metadata["AnalogueGain"])
+                print("metadata 1:", " ExposureTime ", metadata["ExposureTime"], " ColourGains ", metadata["ColourGains"], " AnalogueGain ", metadata["AnalogueGain"])
             self.picam2.capture_file(f'{name}{i}.{format}')
             request = self.picam2.capture_request()
             metadata = request.get_metadata()
             request.release()
-            print("metadata2", metadata["ExposureTime"], metadata["ColourGains"], metadata["AnalogueGain"])
+            print("metadata 2:", " ExposureTime ", metadata["ExposureTime"], " ColourGains ", metadata["ColourGains"], " AnalogueGain ", metadata["AnalogueGain"])
 
             os.path.exists(f'{name}{i}.{format}')
             photo_path.append(os.getcwd() + '/' + name + str(i) + '.' + format)
@@ -70,6 +70,7 @@ class Camera:
                 self.picam2.set_controls({"AeEnable": True})
             elif (value == 0):
                 self.picam2.set_controls({"AeEnable": False})
+            time.sleep(1)
 
     def set_camera_property_awb(self, mode, value):
         '''Sets a camera property based on the mode and value arguments.
@@ -115,6 +116,32 @@ class Camera:
         camera_conf = self.picam2.create_still_configuration(main={"size": (2028, 1520)})
         camera_conf["transform"] = libcamera.Transform(hflip=1, vflip=1)
         self.picam2.configure(camera_conf)
+    
+    def wait_until_controls_applied(self, target_exposure_us=None, target_gain=None, timeout=2.0, tolerance=0.05):
+        t_start = time.time()
+        while time.time() - t_start < timeout:
+            metadata = self.picam2.capture_metadata()
+            real_exp = metadata.get("ExposureTime", 0)
+            real_gain = metadata.get("AnalogueGain", 0)
+    
+            ok_exp = ok_gain = True
+    
+            if target_exposure_us is not None:
+                if abs(real_exp - target_exposure_us) > tolerance * target_exposure_us:
+                    ok_exp = False
+    
+            if target_gain is not None:
+                if abs(real_gain - target_gain) > tolerance * target_gain:
+                    ok_gain = False
+    
+            if ok_exp and ok_gain:
+                return
+    
+            time.sleep(0.1)
+    
+        print("⚠️ Waiting time is over. Not all the values were applied.")
+
+
 
 class UvLed:
     def __init__(self, pin):

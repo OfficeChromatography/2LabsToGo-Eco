@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import DetectionView , ImportCSV, Hdr_View, DetectionDetail, TakeImage, GetConfig, DeleteImage, DeleteImages, Image_Process, WhiteBalance#, Detection_Homming
+from .views import DetectionView , ImportCSV, DetectionDetail, TakeImage, GetConfig, DeleteImage, DeleteImages, Image_Process, WhiteBalance
 from finecontrol.views import MethodList
 urlpatterns = [
     path('capture/', DetectionView.as_view(), name='capture'),
@@ -13,6 +13,5 @@ urlpatterns = [
     path('imageProcess/', Image_Process.as_view(), name = 'imageProcess'),
     path('imageProcess/whitebalance/', WhiteBalance.as_view(), name = 'whitebalance'),   
     path('import_csv/', ImportCSV.as_view(), name='import_csv'),
-    path('hdr/', Hdr_View.as_view(), name='hdr'),
     
 ]

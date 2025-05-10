@@ -75,7 +75,6 @@ class PlateProperties_Db(models.Model):
     size_y = models.DecimalField(decimal_places=0, max_digits=3, null=True)
     offset_left = models.DecimalField(decimal_places=2, max_digits=5, null=True)
     offset_right = models.DecimalField(decimal_places=2, max_digits=5, null=True)
-    offset_top = models.DecimalField(decimal_places=2, max_digits=5, null=True)
     offset_bottom = models.DecimalField(decimal_places=2, max_digits=5, null=True)    
 
     class Meta:

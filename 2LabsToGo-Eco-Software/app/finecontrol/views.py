@@ -46,10 +46,19 @@ class MethodList(FormView):
             icons = [1, 1, 1, 1]
             if not SampleApplication_Db.objects.filter(method=i):
                 icons[0] = 0.3
+                
             if not Development_Db.objects.filter(method=i):
                 icons[1] = 0.3
-                icons[1] = 0.3
+                
+            band_c = BandsComponents_Db.objects.filter(sample_application__method=i)
+            
+            if band_c.exists():
+                for obj in band_c:
+                    if obj.sample is None:
+                        icons[3] = 0 # [1,0.3,1,0]
+               
             data_saved.append([i.filename, i.id, icons])
+
         return JsonResponse(data_saved, safe=False)
 
 class MethodListSP(FormView):
@@ -62,9 +71,16 @@ class MethodListSP(FormView):
             icons = [1, 1, 1, 1]
             if not SampleApplication_Db.objects.filter(method=i):
                 icons[0] = 0.3
+                
             if not Development_Db.objects.filter(method=i):
                 icons[1] = 0.3
-                icons[1] = 0.3
+            band_c = BandsComponents_Db.objects.filter(sample_application__method=i)
+            
+            if band_c.exists():
+                for obj in band_c:
+                    if obj.sample is None:
+                        icons[3] = 0 # [1,0.3,1,0]
+            
             data_saved.append([i.filename, i.id, icons])
         return JsonResponse(data_saved, safe=False)
 
@@ -89,16 +105,13 @@ class OcLabControl(View):
             return JsonResponse({'message': 'OcLab Resumed!'})
         if 'SEND' in request.POST:
             OC_LAB.send(request.POST['message'])
-            return JsonResponse(
-                {'message': f'OcLab {request.POST["message"]} send !'})
+            return JsonResponse({'message': f'OcLab {request.POST["message"]} send !'})
         if 'SEND_NOW' in request.POST:
             OC_LAB.send_now(request.POST['message'])
-            return JsonResponse(
-                {'message': f'OcLab {request.POST["message"]} fast send !'})
+            return JsonResponse({'message': f'OcLab {request.POST["message"]} fast send !'})
         if 'RESET' in request.POST:
             OC_LAB.reset()
-            return JsonResponse(
-                {'message': f'OcLab {request.POST["message"]} reset !'})
+            return JsonResponse({'message': f'OcLab {request.POST["message"]} reset !'})
 
 
 class SyringeLoad(View):
@@ -542,6 +555,28 @@ class DryPumpControl(View):
         return JsonResponse({'message': 'ok'})
     def get (self, request):
         return JsonResponse({'message': 'ok'})
+        
+class WayValve(View):
+    def get(self,request):
+        return render(request, "./wayvalve.html", form)
+
+#class WayValveControl(View):
+#    def post(self, request):
+#        
+#        generate = GcodeGenerator(True)
+#        active = request.POST.get('active')
+#        if (active =='On'):
+#            generate.wayvalve(request.POST.get('times'))
+#        elif (active =='Off'):
+#            OC_LAB.send('Test')
+#        OC_LAB.print_from_list
+#        return JsonResponse({'message': 'ok'})
+#    def get (self, request):
+#        return JsonResponse({'message': 'ok'})
+
+class DispValve(View):
+    def get(self,request):
+        return render(request, "./dispensevalve.html", form)
 
 class Temperature(View):
     # Manage the GET request
@@ -618,6 +653,11 @@ class Fan(View):
     # Manage the GET request
     def get(self, request):
         return render(request, "./fancontrol.html", form)
+
+class Humidity(View):
+    # Manage the GET request
+    def get(self, request):
+        return render(request, "./humiditycontrol.html", form)
 
 class AirSensorList(APIView):
     parser_classes = [JSONParser]

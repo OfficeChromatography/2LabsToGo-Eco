@@ -41,3 +41,14 @@ div.show-image button.image-left {
     bottom: 42%;
     left: 16px;
 }
+.image-name {
+    font-weight: bold;
+    color: #2c3e50;
+    background: rgba(255,255,255,0.8);
+    padding:5px 10px;
+    border-radius: 4px;
+    position: absolute;
+    bottom: 5px;
+    right: 55px;
+    z-index: 100;
+}

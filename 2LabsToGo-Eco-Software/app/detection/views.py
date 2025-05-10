@@ -8,7 +8,6 @@ from .models import *
 from django.core.files import File
 from django.core.files.storage import FileSystemStorage
 from django.forms.models import model_to_dict
-from .hdr import *
 import cv2
 import numpy as np
 from  django.http import QueryDict
@@ -25,14 +24,8 @@ import urllib.parse
 from django.core.files.uploadedfile import SimpleUploadedFile
 from io import BytesIO
 from django.conf import settings
-from django.http import JsonResponse, HttpResponse
 from django.views import View
 from PIL import Image
-import numpy as np
-from io import BytesIO
-
-
-
 MOTION_MODEL = ((0, 'Translation'),
                     (1, 'Euclidean'),
                     (2, 'Affine'),
@@ -57,28 +50,15 @@ class ImportCSV(View):
                     continue  
 
                 key = row[0].strip()  
-                value = row[1].strip()  
-
-                if key.startswith('colorSelected'):
-                    try:
-                        json_str = key[len('colorSelected'):] + value
-                        color_array = json.loads(json_str)
-
-                        for color in color_array:
-                            color_selected[color['name']] = color['value']
-
-                        
-                    except json.JSONDecodeError as e:
-                        return JsonResponse({'error': f'Error parsing colorSelected: {str(e)}'}, status=400)
+                value = row[1].strip()
+                if key in ['filename', 'note']:
+                    form_data[key] = urllib.parse.unquote(value)
+                elif key == 'colour_gains':
+                    form_data[key] = urllib.parse.unquote(value).replace('%2C', ',')
+                elif key == 'image_id':
+                    form_data['image_id'] = default_image_url
                 else:
-                    if key in ['filename', 'note']:
-                        form_data[key] = urllib.parse.unquote(value)
-                    elif key == 'colour_gains':
-                        form_data[key] = urllib.parse.unquote(value).replace('%2C', ',')
-                    elif key == 'image_id':
-                        form_data['image_id'] = default_image_url
-                    else:
-                        form_data[key] = value
+                    form_data[key] = value
             form_data['image_id'] = default_image_url
 
             request.session['imported_form_data'] = form_data
@@ -107,9 +87,9 @@ class Image_Process(View):
 
         if direction == 'next' :
             current_photo = Images_Db.objects.get(image__contains=photo_name)
-            current_photo_id = int(current_photo.id);
-            next_photo_id = current_photo_id + 1;
-            next_photo = Images_Db.objects.get(id=next_photo_id);
+            current_photo_id = int(current_photo.id)
+            next_photo_id = current_photo_id + 1
+            next_photo = Images_Db.objects.get(id=next_photo_id)
             if next_photo:
                 
                 photo_path = next_photo.image.url
@@ -117,9 +97,9 @@ class Image_Process(View):
 
         elif direction == 'pre':
                 current_photo = Images_Db.objects.get(image__contains=photo_name)
-                current_photo_id = int(current_photo.id);
-                previous_photo_id = current_photo_id - 1;
-                previous_photo = Images_Db.objects.get(id=previous_photo_id);
+                current_photo_id = int(current_photo.id)
+                previous_photo_id = current_photo_id - 1
+                previous_photo = Images_Db.objects.get(id=previous_photo_id)
                 if previous_photo:
                     photo_path = previous_photo.image.url
                     full_photo_url = request.build_absolute_uri(photo_path)
@@ -131,84 +111,35 @@ class Image_Process(View):
         return JsonResponse({'imagepath':full_photo_url})
         
 
-# ~ class WhiteBalance(View):
-    # ~ def post(self, request):
-        # ~ if 'image' not in request.FILES:
-            # ~ return JsonResponse({"error": "No image file provided"}, status=400)
-        
-        # ~ image_file = request.FILES['image']
-        
-        # ~ try:
-            # ~ # Open and process the image
-            # ~ img = Image.open(image_file).convert('RGB')
-            # ~ img = np.array(img)
             
-            # ~ img_bgr = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-            # ~ wb = cv2.xphoto.createSimpleWB()
-            # ~ img_balanced = wb.balanceWhite(img_bgr)
-            
-            # ~ img_rgb = cv2.cvtColor(img_balanced, cv2.COLOR_BGR2RGB)
-            # ~ image_io = BytesIO()
-            # ~ Image.fromarray(img_rgb).save(image_io, format='PNG')
-            # ~ image_io.seek(0)
-            
-            # ~ # Save the file to disk
-            # ~ temp_path = "/home/labstogo/Desktop/temp_balanced_image.png"
-            # ~ try:
-                # ~ Image.fromarray(img_rgb).save(temp_path)
-                # ~ print(f"Image saved at {temp_path}")
-            # ~ except Exception as save_error:
-                # ~ return JsonResponse({"error": f"Failed to save file: {str(save_error)}"}, status=500)
-            
-            # ~ return HttpResponse(image_io, content_type='image/png')
-        
-        # ~ except Exception as e:
-            # ~ # Log and return the exact error
-            # ~ print(f"Error in WhiteBalance View: {str(e)}")
-            # ~ return JsonResponse({"error": f"Processing failed: {str(e)}"}, status=500)
-            
-
-
-
 class WhiteBalance(View):
     def post(self, request):
-        # Check if 'image' is in the request
         if 'image' not in request.FILES:
             return JsonResponse({"error": "No image file provided"}, status=400)
         
         image_file = request.FILES['image']
 
         try:
-            # Open the image using PIL and convert it to RGB
             img = Image.open(image_file).convert('RGB')
             img = np.array(img)
             
-            # Convert RGB to BGR for OpenCV processing
             img_bgr = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
 
-            # Apply the OpenCV white balance filter
             wb = cv2.xphoto.createSimpleWB()
             img_balanced = wb.balanceWhite(img_bgr)
             
-            # Convert back to RGB for PIL
             img_rgb = cv2.cvtColor(img_balanced, cv2.COLOR_BGR2RGB)
 
-            # Convert the processed image to a binary stream
             image_io = BytesIO()
             Image.fromarray(img_rgb).save(image_io, format='PNG')
-            image_io.seek(0)  # Reset the stream position to the beginning
+            image_io.seek(0)  
 
-            # Return the processed image as a binary HTTP response
             return HttpResponse(image_io, content_type='image/png')
 
         except Exception as e:
-            # Log and return the exact error
             print(f"Error in WhiteBalance View: {str(e)}")
             return JsonResponse({"error": f"Processing failed: {str(e)}"}, status=500)
-
-
-    
-    
+ 
 class DetectionView(FormView):
     def get(self, request):
         form = {}
@@ -244,22 +175,10 @@ class DetectionView(FormView):
         return render(request, 'capture.html', context)
 
 class TakeImage(View):
-    def get(self, request):
-        action = request.GET.get('action')
-        if action == "LOAD_NOTE":
-            image_id = request.GET.get('id')
-            try:
-                image_instance = Images_Db.objects.get(id=image_id)
-                return JsonResponse({'note': image_instance.note}, status=200)
-            except Images_Db.DoesNotExist:
-                return JsonResponse({'error': 'Image not found'}, status=404)
-        else:
-            return JsonResponse({'error': 'Invalid action for GET method'}, status=400)
-    
     def post(self, request):
         try:
             action = request.POST.get('action', 'TAKE_PHOTO')
-            
+            image_id = request.POST.get("image_id")
 
             if action == "SAVE_NOTE":
                 image_id = request.POST.get('id')
@@ -279,7 +198,6 @@ class TakeImage(View):
                 color_selected = request.POST.getlist('colorSelected[]')
                 method_selected = request.POST.getlist('methodSelected[]')
 
-
                 if len(color_selected) != 3:
                     print("Invalid colorSelected data:", color_selected)
                     return JsonResponse({'error': 'Invalid colorSelected data'}, status=400)
@@ -287,13 +205,13 @@ class TakeImage(View):
                     print("Invalid methodSelected data:", method_selected)
                     return JsonResponse({'error': 'Invalid methodSelected data'}, status=400)
 
+                
                 try:
                     color_dict = {
                         "red": int(color_selected[0]),
                         "green": int(color_selected[1]),
                         "blue": int(color_selected[2]),
                     }
-                    
                 except ValueError as ve:
                     print("Error parsing color values:", ve)
                     return JsonResponse({'error': 'Invalid color values'}, status=400)
@@ -304,20 +222,82 @@ class TakeImage(View):
                     photo_shoot.set_camera_configurations(color_dict)
                     photo_shoot.shoot()
                     photo_shoot.photo_correction()
-                    photo_infos = []
-                    
-                    images = photo_shoot.save_photo_in_db()  
+
+                    image_id = request.POST.get("image_id")
+                    if image_id:
+                        try:
+                            phantom_image = Images_Db.objects.get(id=image_id)
+                        except Images_Db.DoesNotExist:
+                            phantom_image = None
+                    else:
+                        phantom_image = None
+
+                    images = photo_shoot.save_photo_in_db()
+
+                    photo_urls = []
+                    photo_ids = []
                     for photo_object in images:
-                        photo_info = {
-                            'url': request.META['HTTP_ORIGIN'] + photo_object.image.url,
-                            'new_name': photo_object.image.url,
-                            'id': photo_object.id,
-                        }
-                        photo_infos.append(photo_info)
-                        print("Photo info saved:", photo_info)
-                    
-                    return JsonResponse(photo_infos, safe=False)
-                
+                        user_conf = camera_conf = leds_conf = None
+
+                        if phantom_image:
+                            if phantom_image.user_conf:
+                                if not photo_object.user_conf:
+                                    old_conf = phantom_image.user_conf
+                                    conf_dict = model_to_dict(old_conf)
+                                    conf_dict.pop('id', None)
+                                    user_conf = UserControls_Db.objects.create(**conf_dict)
+                                    photo_object.user_conf = user_conf
+                                else:
+                                    user_conf = photo_object.user_conf
+
+                            if phantom_image.camera_conf:
+                                if not photo_object.camera_conf:
+                                    old_conf = phantom_image.camera_conf
+                                    conf_dict = model_to_dict(old_conf)
+                                    conf_dict.pop('id', None)
+                                    camera_conf = CameraControls_Db.objects.create(**conf_dict)
+                                    photo_object.camera_conf = camera_conf
+                                else:
+                                    camera_conf = photo_object.camera_conf
+
+                            if phantom_image.leds_conf:
+                                if not photo_object.leds_conf:
+                                    old_conf = phantom_image.leds_conf
+                                    conf_dict = model_to_dict(old_conf)
+                                    conf_dict.pop('id', None)
+                                    leds_conf = Leds_Db.objects.create(**conf_dict)
+                                    photo_object.leds_conf = leds_conf
+                                else:
+                                    leds_conf = photo_object.leds_conf
+
+                            photo_object.note = phantom_image.note
+
+                        photo_object.save()
+                        
+                        url = request.META['HTTP_ORIGIN'] + photo_object.image.url
+                        photo_urls.append(url)
+                        photo_ids.append(photo_object.id)
+
+                    leds_data   = model_to_dict(leds_conf)   if leds_conf else {}
+                    camera_data = model_to_dict(camera_conf) if camera_conf else {}
+                    user_data   = model_to_dict(user_conf)   if user_conf else {}
+                    response_images = []
+                    for i, url in enumerate(photo_urls):
+                        response_images.append({
+                            "image_id": photo_ids[i],
+                            "url": url,
+                            "note": phantom_image.note if phantom_image else "",
+                            "user_conf": model_to_dict(user_conf) if user_conf else {},
+                            "leds_conf": model_to_dict(leds_conf) if leds_conf else {},
+                            "camera_conf": model_to_dict(camera_conf) if camera_conf else {},
+                        })
+
+                    return JsonResponse({
+                        "images": response_images,
+                        "image_id": photo_ids[-1] 
+                    })
+
+
                 except Exception as e:
                     print("Error during photo shoot process:", str(e))
                     return JsonResponse({'error': str(e)}, status=500)
@@ -325,83 +305,111 @@ class TakeImage(View):
             else:
                 print("Invalid action:", action)
                 return JsonResponse({'error': 'Invalid action'}, status=400)
-        
+
         except Exception as e:
             print("Unexpected error occurred:", str(e))
             return JsonResponse({'error': 'An error occurred on the server. Check logs for details.'}, status=500)
 
 class DetectionDetail(View):
-    def delete(self, request, id):
-        Method_Db.objects.get(pk=id).delete()
-        return JsonResponse({})
-
     def get(self, request, id):
-        """Loads an object specified by ID"""
-        id_object = id
-        response = {}
-        method = Method_Db.objects.get(id=id_object, auth=request.user)
-        images = Images_Db.objects.filter(method=method)
+        """Loads a method and its associated images with configurations"""
+        try:
+            method = Method_Db.objects.get(id=id, auth=request.user)
+        except Method_Db.DoesNotExist:
+            return JsonResponse({"error": "No existe ese método"}, status=404)
 
+        images = Images_Db.objects.filter(method=method).order_by("id")
 
-        if not Method_Db.objects.get(id=id_object, auth=request.user) or images.count()==0:
-            response.update({"filename":getattr(method,"filename")})
-            response.update({"id":id_object})
-        
-        else:
-            url_list=[]
-            id_list=[]
+        response_images = []
+        for img in images:
+            response_images.append({
+                "image_id": img.id,
+                "url": img.image.url if img.image else "/media/default.jpg",
+                "note": img.note or "",
+                "user_conf": model_to_dict(img.user_conf) if img.user_conf else {},
+                "leds_conf": model_to_dict(img.leds_conf) if img.leds_conf else {},
+                "camera_conf": model_to_dict(img.camera_conf) if img.camera_conf else {},
+            })
 
-            
-            pos = images.count() - 1
-            if (pos<0): pos=0 
-            imageconf = images[pos]
-            
-            user_conf = model_to_dict(imageconf.user_conf,
-                                    fields=[field.name for field in imageconf.user_conf._meta.fields])
-            leds_conf = model_to_dict(imageconf.leds_conf,
-                                    fields=[field.name for field in imageconf.leds_conf._meta.fields])
-            camera_conf = model_to_dict(imageconf.camera_conf,
-                                    fields=[field.name for field in imageconf.camera_conf._meta.fields])
-            
-            for image in images:
-                url_list.append(image.image.url)
-                id_list.append(image.id)
-
-            response.update({**{
-                        'url': url_list,
-                        'filename': image.method.filename,
-                        'id': id_object,
-                        'id_list': id_list,
-                        'user_conf': user_conf,
-                        'leds_conf': leds_conf,
-                        'camera_conf': camera_conf,
-                        'note': imageconf.note,
-                        }})
-        return JsonResponse(response)
-
+        return JsonResponse({
+            "filename": method.filename,
+            "id": method.id,
+            "images": response_images
+        })
+   
     def post(self, request):
-        """Save and Update Data"""
-        
-        id = request.POST.get("selected-element-id")
-        image_id = request.POST.get("image_id")
-        method_form = Method_Form(request.POST)
+        method_id = request.POST.get("selected-element-id")
 
-        if not id:
-            method = method_form.save(commit=False)
-            method.auth = request.user
-            method.save()
-        else:
-            method = Method_Db.objects.get(pk=id)
+        if method_id:
+            method = Method_Db.objects.get(pk=method_id)
             method_form = Method_Form(request.POST, instance=method)
-            method_form.save()
-            if image_id:
-                image_instance = Images_Db.objects.get(id=image_id)
-                image_instance.method = method
-                image_instance.note = request.POST.get("note")
-                image_instance.save()
+            if method_form.is_valid():
+                method_form.save()
+            else:
+                return JsonResponse({"errors": method_form.errors}, status=400)
+        else:
+            temp_method = Method_Form(request.POST)
+            if temp_method.is_valid():
+                method = temp_method.save(commit=False)
+                method.auth = request.user
+                method.save()
+            else:
+                return JsonResponse({"errors": temp_method.errors}, status=400)
+        new_image = Images_Db.objects.create(
+            method=method,
+            filename="placeholder_no_photo",   
+            uploader=request.user,
+            note=request.POST.get("note", "New image"),
+        )
 
-        return JsonResponse({'message':'Data !!'})
+        camera_form = CameraControlsForm(request.POST)
+        user_form   = UserControlsForm(request.POST)
+        leds_form   = LedsControlsForm(request.POST)
 
+        if not (camera_form.is_valid() and user_form.is_valid() and leds_form.is_valid()):
+            errors = {
+                "camera_errors": camera_form.errors,
+                "user_errors": user_form.errors,
+                "leds_errors": leds_form.errors,
+            }
+            return JsonResponse({"errors": errors}, status=400)
+
+        camera_instance = camera_form.save(commit=False)
+        camera_instance.pk = None
+        camera_instance.save()
+
+        user_instance = user_form.save(commit=False)
+        user_instance.pk = None
+        user_instance.save()
+
+        leds_instance = leds_form.save(commit=False)
+        leds_instance.pk = None
+        leds_instance.save()
+
+        new_image.camera_conf = camera_instance
+        new_image.user_conf   = user_instance
+        new_image.leds_conf   = leds_instance
+        new_image.save()
+        images = Images_Db.objects.filter(method=method).order_by("id")
+
+        response_images = []
+        for img in images:
+            response_images.append({
+                "image_id": img.id,
+                "url": img.image.url if img.image else "/media/default.jpg",
+                "note": img.note or "",
+                "user_conf": model_to_dict(img.user_conf) if img.user_conf else {},
+                "leds_conf": model_to_dict(img.leds_conf) if img.leds_conf else {},
+                "camera_conf": model_to_dict(img.camera_conf) if img.camera_conf else {},
+            })
+
+        return JsonResponse({
+            "filename": method.filename,
+            "id": method.id,
+            "images": response_images
+        })
+        
+        
 class GetConfig(View):
     def get(self, request, id):
         image = Images_Db.objects.get(pk=id)
@@ -420,50 +428,6 @@ class GetConfig(View):
                         }})
         return JsonResponse(response)
 
-class Hdr_View(View):
-    def get(self, request):
-        form = {
-            'AligmentConfigurationForm': AligmentConfigurationForm(initial={
-                    'number_of_iterations': 5000,
-                    'warp_mode': 0,
-            }),
-        }
-        return render(request, "hdr.html", form)
-
-    def post(self, request):
-        fs = FileSystemStorage()
-        form = AligmentConfigurationForm(QueryDict(request.POST.getlist('AligmentConfigurationForm')[0]))
-        ids = request.POST.getlist('id[]')
-        if not form.is_valid():
-            # Check the form values
-            return HttpResponseBadRequest("Wrong Parameters")
-        elif len(ids)<2:
-            # Check there's at least 2 images
-            return HttpResponseBadRequest("Select at least 2 Valid Pictures")
-        else:
-            try:
-                img_list = [cv2.imread(Images_Db.objects.get(id=id).image.path) for id in ids]
-            except ValueError:
-                return HttpResponseBadRequest("Select valid Pictures")
-
-            processed_hdr = HDR(  img_list,
-                                form.cleaned_data.get('warp_mode'),
-                                form.cleaned_data.get('number_of_iterations')).process_images()
-            if processed_hdr is None:
-                return HttpResponseBadRequest('There was an error processing HDR on images')
-            else:
-                with open(processed_hdr, 'rb') as f:
-                    object = Hdr_Image()
-                    object.image.save(os.path.basename(processed_hdr), File(f))
-                    object.save()
-                    f.close()
-                    response = {
-                        'url':request.META['HTTP_ORIGIN']+object.image.url,
-                        'new_name':object.image.name,
-                        'method': MOTION_MODEL[form.cleaned_data.get('warp_mode')][1]
-                    }
-                return JsonResponse(response)
-
 class DeleteImage(View):
     def delete(self, request, id):
         if not Images_Db.objects.get(pk=id):
@@ -479,6 +443,7 @@ class DeleteImage(View):
 class DeleteImages(View):
     def delete(self, request, id):
         apps = Images_Db.objects.filter(method=Method_Db.objects.get(pk=id))
+        Method_Db.objects.get(pk=id).delete()
         for image in apps:
             path = os.path.join(MEDIA_ROOT, str(image.image))
             if os.path.exists(path):

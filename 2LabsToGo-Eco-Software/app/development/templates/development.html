@@ -3,7 +3,7 @@
 {% load static %}
 <head>
 
-  <!--{% include 'modules/basics/head.html' %}-->
+  {% include 'modules/basics/head.html' %}
   <title>Development</title>
   
   <!-- Chart.js-->
@@ -82,18 +82,22 @@
                   </div>
                   <div class="card-body d-flex flex-column">
                       {% include 'modules/loadlist/loadlist.html' %}
-                      <br>
-                      <form id="importCsvForm" action="{% url 'import_development_csv' %}" method="post" enctype="multipart/form-data">
+                      <!-- <br> -->
+                      <!-- <form id="importCsvForm" action="{% url 'import_development_csv' %}" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <input type="file" name="csv_file" id="import_csv_file" class="form-control">
-                        <button type="submit" id="import_csv_button" class="btn btn-primary mt-2">Import CSV</button>
-                      </form>
-                      <br>
+                        <label for="import_csv_file" class="btn btn-primary mt-2">Choose file</label>
+                        
+                        <input type="file" name="csv_file" id="import_csv_file" class="form-control" style="display:none">
+
+
+                        <button type="submit" id="import_csv_button" class="btn btn-primary ">Import CSV</button>
+                      </form> -->
+                      <!-- <br> -->
                       <div class="container-fluid">
                           <div class="row">
                               
                               <div class="col">
-                                  {% include 'modules/applicationcontrol/applicationcontrol.html' %}
+                                  {% include 'modules/applicationcontrol/applicationcontroldev.html' %}
                               </div>
                           </div>
                       </div>

@@ -146,10 +146,11 @@ class Images(models.Model):
     note = models.TextField(default="", null=True, blank=True)
 
 class Images_Db(Images):
-    image = models.ImageField(upload_to ='images/', default='/default.jpeg')
-    user_conf = models.ForeignKey(UserControls_Db, on_delete=models.CASCADE, null=True)
-    leds_conf = models.ForeignKey(Leds_Db, on_delete=models.CASCADE, null=True)
-    camera_conf = models.ForeignKey(CameraControls_Db, on_delete=models.CASCADE, null=True)
+    image = models.ImageField(upload_to ='images/', default='/default.jpg')
+    leds_conf   = models.OneToOneField(Leds_Db, on_delete=models.CASCADE, null=True, blank=True)
+    camera_conf = models.OneToOneField(CameraControls_Db, on_delete=models.CASCADE, null=True, blank=True)
+    user_conf   = models.OneToOneField(UserControls_Db, on_delete=models.CASCADE, null=True, blank=True)
+
     method = models.ForeignKey(Method_Db, on_delete = models.CASCADE, null=True, blank=True)
 
     def file_name(self):
@@ -160,9 +161,6 @@ class Images_Db(Images):
         self.leds_conf.delete()
         self.camera_conf.delete()
         return super(self.__class__, self).delete(*args, **kwargs)
-
-class Hdr_Image(Images):
-    image = models.ImageField(upload_to ='hdr/', default='/default.jpeg', null=True, blank=True)
 
 
 class Detection_ZeroPosition(models.Model):

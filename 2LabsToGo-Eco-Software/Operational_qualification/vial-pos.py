@@ -19,7 +19,7 @@ command(ser, "M42P36S0\r\n")  #Switch 3way-valve?
 command(ser, "M42P49S0\r\n")  #Switch Z-motor and Z-endstop?
 command(ser, "G28Z\r\n")      #homing z1
 command(ser, "G28X\r\n")      #Homing X
-command(ser, "G0X1F1000\r\n")      #x-cart to funnel
+command(ser, "G0X1F1000\r\n")      #x-cart to waste
 
 #print("Insert the vial rack with parcel tape.")
 print("")

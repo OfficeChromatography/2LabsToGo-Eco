@@ -33,11 +33,9 @@ class InstallationProcess:
             "curl": ['sudo', 'apt-get', 'install', 'curl', '-y'],
             "docker download": ["sudo", "curl", "-fsSL", "https://get.docker.com", "-o", "get-docker.sh"],
             "docker installation": ["sudo", "sh", "get-docker.sh"],
-            
             "install_docker_compose": ["sudo", "pip3", "install", "docker-compose"],
             "install_libraries": ["sudo", "apt-get", "install", "-y", "libffi-dev", "libssl-dev"],
-            "creating media folder": ["mkdir", "app/media"],
-            "autoremove": ['sudo', 'apt-get', 'autoremove', '-y'],
+            "autoremove": ["sudo", "apt-get", "autoremove", "-y"],
         }
 
         print(self.main_title)

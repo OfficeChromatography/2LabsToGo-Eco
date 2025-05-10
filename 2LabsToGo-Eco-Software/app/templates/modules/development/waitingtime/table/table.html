@@ -1,16 +1,11 @@
-{% load static %}
-<meta http-equiv="Pragma" content="no-cache">
 <table id="waitingTimeTable" style="width:100%">
-  <tr>
-      <th>#</th>
-      <th>Waiting Time</th>
-  </tr>
-    <form id="waitingtimeval">
-        <tr id="row_wait_template" style="display:none">
-            <td class="id_application"></td>
-            <td class="value">
-                <input type="number" class="form-control" name="waiting_time_">
-            </td>
-        </tr>
-    </form>
-</table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Waiting Time (s)</th>
+      </tr>
+    </thead>
+    <tbody id="waitingTimeTableBody">
+    </tbody>
+  </table>
+  

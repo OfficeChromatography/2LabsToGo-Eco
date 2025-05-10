@@ -67,6 +67,7 @@ class DevelopmentDelete(View):
 
     def delete(self, request, id):
         apps = Development_Db.objects.filter(method=Method_Db.objects.get(pk=id))
+        Method_Db.objects.get(pk=id).delete()
         apps.delete()
         return JsonResponse({})
 
@@ -74,19 +75,16 @@ class DevelopmentDelete(View):
 class DevelopmentView(FormView):
     def get(self, request):
         """Manage the HTML view in Development"""
-        OC_LAB.send(f'M92Z1600') #syringe pump pitch (400 for autosampler , 2133 for K)
-        OC_LAB.send(f'M203Z5') #speed syringe pump  
-        OC_LAB.send(f'M42P49S255') #switch motor and endstop
-        OC_LAB.send(f'M42P36S255') #valve for SP
-        OC_LAB.send(f'G0X1')
+        OC_LAB.send(f'M92Z1600')
+        OC_LAB.send(f'M203Z5')  
+        OC_LAB.send(f'M42P49S255')
+        OC_LAB.send(f'M42P36S255')
+        OC_LAB.send(f'G28YX')
         return render(request, 'development.html', {})
 
 
 class DevelopmentDetail(View):
-    def delete(self, request, id):
-        Method_Db.objects.get(pk=id).delete()
-        return JsonResponse({})
-
+    
     def get(self, request, id):
         """Loads an object specified by ID"""
         id_object = id
@@ -97,7 +95,6 @@ class DevelopmentDetail(View):
             response.update({"filename": getattr(method, "filename")})
             response.update({"id": id_object})
         else:
-
             dev_config = Development_Db.objects.get(method=method)
             response.update(model_to_dict(dev_config.pressure_settings.get(), exclude=["id", ]))
             response.update(model_to_dict(dev_config.plate_properties.get(), exclude=["id", ]))
@@ -106,7 +103,13 @@ class DevelopmentDetail(View):
             response.update(model_to_dict(method))
 
             flowrate_entry = Flowrate_Db.objects.filter(development=dev_config.id).values('value')
+            
             response.update({'flowrate': [entry for entry in flowrate_entry]})
+
+        waiting_times_data = list(
+            WaitTime_Db.objects.filter(development=dev_config).values('waitTime', 'application')
+        )
+        response.update({'waitingTimes': waiting_times_data})
 
         return JsonResponse(response)
 
@@ -116,7 +119,6 @@ class DevelopmentDetail(View):
             id = request.POST.get("selected-element-id")
             flowrate = request.POST.get('flowrate')
             flowrate = json.loads(flowrate) if flowrate else []
-
             if not id or not Development_Db.objects.filter(method=Method_Db.objects.get(pk=id)):
                 development_form = Development_Form(request.POST)
                 if development_form.is_valid():
@@ -144,7 +146,6 @@ class DevelopmentDetail(View):
                     development_instance.band_settings.add(objects_save["band_settings"])
                 else:
                     return HttpResponseBadRequest({"error": "Please check all the inputs!"})
-
             else:
                 method = Method_Db.objects.get(pk=id)
                 method_form = Method_Form(request.POST, instance=method)
@@ -156,75 +157,116 @@ class DevelopmentDetail(View):
                 dev_inst.save()
                 data_validations_and_save(
                     plate_properties=PlateProperties_Form(request.POST,
-                                                          instance=development_instance.plate_properties.get()),
+                                                        instance=development_instance.plate_properties.get()),
                     pressure_settings=PressureSettings_Form(request.POST,
                                                             instance=development_instance.pressure_settings.get()),
                     zero_position=ZeroPosition_Form(request.POST,
                                                     instance=development_instance.zero_properties.get()),
                     band_settings=DevelopmentBandSettings_Form(request.POST,
-                                                               instance=development_instance.band_settings.get()),
+                                                            instance=development_instance.band_settings.get()),
                 )
                 development_instance.flowrates.all().delete()
-
+            
             for flow_value in flowrate:
                 flowrate_form = Flowrate_Form(flow_value)
                 if flowrate_form.is_valid():
                     flowrate_object = flowrate_form.save()
                     development_instance.flowrates.add(flowrate_object)
 
+            waiting_times_str = request.POST.get("waitingTimes")
+            if waiting_times_str:
+                try:
+                    waiting_times = json.loads(waiting_times_str)
+                except ValueError:
+                    return JsonResponse({"error": "Formato JSON inválido en waitingTimes"}, status=400)
+
+                
+                WaitTime_Db.objects.filter(development=development_instance).delete()
+
+                for wt in waiting_times:
+                    application = wt.get("application")
+                    waiting_time_value = wt.get("waitTime")
+                    if application is not None and waiting_time_value is not None:
+                        WaitTime_Db.objects.create(
+                            development=development_instance,
+                            waitTime=waiting_time_value,
+                            application=application
+                        )
+                    else:
+                        print("Error: Missing 'application' or 'waitTime' in:", wt)
+
             return JsonResponse({'message': 'Data saved successfully'})
 
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
 
+
 class DevelopmentAppPlay(View):
     def post(self, request):
         try:
-            
             method_id = request.POST.get('selected-element-id')
-            imported_waiting_times = request.session.get('imported_waiting_times', [])
-
-            waiting_times = []
-
-            if method_id:
-                development_object = Development_Db.objects.get(method=method_id)
-                waiting_times = list(WaitTime_Db.objects.filter(development=development_object).values('waitTime', 'application'))
-                
-
-            if not waiting_times and imported_waiting_times:
-                waiting_times = imported_waiting_times
-                
-
-            if not waiting_times:
-                return JsonResponse({'error': 'No waiting times found or provided.'}, status=400)
             
-            flowrates = json.loads(request.POST.get('flowrate', '[]'))
-            if not flowrates:
-                return JsonResponse({'error': 'No flowrates provided.'}, status=400)
-            
+            waiting_times_request = []
+            waiting_times_str = request.POST.get('waitingTimes')
+            # Manejo de 'waitingTimes'
+                       
+            if waiting_times_str:
+                try:
+                    waiting_times_request = json.loads(waiting_times_str)
+                except json.JSONDecodeError:
+                    return JsonResponse({'error': 'Invalid format for waitingTimes.'}, status=400)
+            else:
+                return JsonResponse({'error': 'waitingTimes not provided.'}, status=400)
+
+                if waiting_times_str:
+                    waiting_times_request = json.loads(waiting_times_str)
             forms_data = data_validations(
                 plate_properties=PlateProperties_Form(request.POST),
                 pressure_settings=PressureSettings_Form(request.POST),
                 zero_position=ZeroPosition_Form(request.POST),
                 band_settings=DevelopmentBandSettings_Form(request.POST)
             )
+            forms_data['waiting_times'] = waiting_times_request
+            syringe_type_volume_str = request.POST.get('volume_type')
+            syringe_type_length_str = request.POST.get('length_type')
 
+            # Manejo de 'flowrate'
+            flowrates_str = request.POST.get('flowrate')
+            if flowrates_str:
+                try:
+                    flowrates = json.loads(flowrates_str)
+                    if not isinstance(flowrates, list) or len(flowrates) == 0:
+                        return JsonResponse({'error': 'Invalid or empty flowrate list.'}, status=400)
+                except json.JSONDecodeError:
+                    return JsonResponse({'error': 'Invalid format for flowrate.'}, status=400)
+            else:
+                return JsonResponse({'error': 'Flowrate not provided.'}, status=400)
+            
             forms_data['flowrate'] = flowrates
-            forms_data['waiting_times'] = waiting_times
-            syringe_type_volume = request.session.get('volume_type')
-            syringe_type_length = request.session.get('length_type')
+            # flowrates = json.loads(request.POST.get('flowrate', '[]'))
 
-            if not syringe_type_volume or not syringe_type_length:
-                return JsonResponse({'error': 'Syringe type not specified in session.'}, status=400)
+            # if not flowrates:
+            #     return JsonResponse({'error': 'No flowrates provided.'}, status=400)
+            # forms_data['flowrate'] = flowrates
 
-            gcode = calculateDevelopment(forms_data, syringe_type_length, syringe_type_volume)
+            # Validación básica
+            if not syringe_type_volume_str or not syringe_type_length_str:
+                return JsonResponse({'error': 'Syringe type not specified.'}, status=400)
+
+            # Ejemplo: quitar el sufijo " mm" y convertir a float
+            try:
+                syringe_type_length_num = float(syringe_type_length_str.replace(' mm', ''))
+                syringe_type_volume_num = float(syringe_type_volume_str)
+            except ValueError:
+                return JsonResponse({'error': 'Invalid syringe type format.'}, status=400)
+            gcode = calculateDevelopment(forms_data, syringe_type_length_num, syringe_type_volume_num)
             OC_LAB.print_from_list(gcode)
+
             return JsonResponse({'message': 'Gcode generated successfully.'})
 
         except Development_Db.DoesNotExist:
             return JsonResponse({'error': 'Development object not found.'}, status=400)
         except Exception as e:
-            print(f"Error en DevelopmentAppPlay: {str(e)}")
             return JsonResponse({'error': str(e)}, status=500)
 
 class DevelopmentWaitingTime(View):
@@ -281,7 +323,6 @@ class DevelopmentWaitingTime(View):
         except Development_Db.DoesNotExist:
             return JsonResponse({"data": "Development object not found"}, status=400)
         except Exception as e:
-            print(f"Error en DevelopmentWaitingTime: {str(e)}")
             return JsonResponse({"data": str(e)}, status=500)
 
 class DevelopmentViewWaitingTimes(View):

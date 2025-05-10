@@ -1,39 +1,40 @@
 window.table = new Table(0, calcVol);
 var selectedFile;
+
+
 var getData = function(){
-    data = $("form:not(.band-component)").serialize()+'&table='+JSON.stringify(table.getTableValues());
+    data = $("form:not(.band-component):visible").serialize()+'&table='+JSON.stringify(table.getTableValues());
     return data
 }
 
 var setData = function (data){
   $.each(data,function (key,value){
-    $('input[name='+key+']').val(value)
-    if(key == "main_property"){
-        $('select[name='+key+']').val(value)
+    let element = $('[name="'+key+'"]');
+    if(element.is('input')){
+      element.val(value);
     }
-  })
-  $(".change-graph-size-parameter").trigger("change")
+    else if(element.is('select')){
+      element.val(value).change();
+    }
+
+
+  });
+  $('.change-graph-size-parameter').trigger('change')
   table.loadTable(data.bands_components)
-  updateFormDisplay();
 }
 
 var list_of_saved = new listOfSaved("http://127.0.0.1:8000/sample/save/",
-    "http://127.0.0.1:8000/sample/list",
-    "http://127.0.0.1:8000/sample/load",
-    getData,
-    setData,
-    "http://127.0.0.1:8000/sample/delete",
-    )
+  "http://127.0.0.1:8000/sample/list",
+  "http://127.0.0.1:8000/sample/load",
+  getData,
+  setData,
+  "http://127.0.0.1:8000/sample/delete",
+  "autosampler"
+)
 
-var application_control = new ApplicationControl('http://127.0.0.1:8000/oclab/control/',
-                                                'http://127.0.0.1:8000/sample/start/',
-                                                getData)
-
-$(document).ready(function() {
-    createBandsTable()
-    calcVol()
-    list_of_saved.loadList()
-});
+var application_control = new ApplicationControlAS('http://127.0.0.1:8000/oclab/control/',
+                                              'http://127.0.0.1:8000/sample/start/',
+                                              getData)
 
 $(".change-graph-size-parameter").on("change", function(){
     changeGraphSize()
@@ -97,7 +98,6 @@ function mainCalculations(){
 
     let offset_left_size = parseFloat($("#id_offset_left").val());
     let offset_right_size = parseFloat($("#id_offset_right").val());
-    let offset_top_size = parseFloat($("#id_offset_top").val());
     let offset_bottom_size = parseFloat($("#id_offset_bottom").val());
 
     let gap_size = parseFloat($("#id_gap").val());
@@ -108,7 +108,7 @@ function mainCalculations(){
     let property = $("#id_main_property").val();
 
   // Check if there are missing parameters
-  missing_parameter = (isNaN(plate_x_size)||isNaN(plate_y_size)||isNaN(offset_left_size)||isNaN(offset_right_size)||isNaN(offset_top_size)||isNaN(offset_bottom_size)||isNaN(gap_size)||isNaN(band_height))
+  missing_parameter = (isNaN(plate_x_size)||isNaN(plate_y_size)||isNaN(offset_left_size)||isNaN(offset_right_size)||isNaN(offset_bottom_size)||isNaN(gap_size)||isNaN(band_height))
 
   if(areErrors('#id_parameter_error',missing_parameter)){return}
 
@@ -179,10 +179,9 @@ function nBandsWorkingArea(){
     let plate_y_size = parseFloat($("#id_size_y").val());
     let offset_left_size = parseFloat($("#id_offset_left").val());
     let offset_right_size = parseFloat($("#id_offset_right").val());
-    let offset_top_size = parseFloat($("#id_offset_top").val());
     let offset_bottom_size = parseFloat($("#id_offset_bottom").val());
 
-    working_area = [plate_x_size-offset_left_size-offset_right_size,plate_y_size-offset_top_size-offset_bottom_size]
+    working_area = [plate_x_size-offset_left_size-offset_right_size,plate_y_size-offset_bottom_size]
     if(working_area[0] <= 0 || working_area[1] <= 0 || isNaN(working_area[0]) || isNaN(working_area[1])){
         return [NaN,NaN];
     }
@@ -191,7 +190,7 @@ function nBandsWorkingArea(){
     }
 }
 
-//  Calculate the sum of gaps lenght
+//  Calculate the sum of gaps length
 function totalGapLength(number_bands, gap_size){
   number_of_gaps = number_bands - 1;
   if(number_of_gaps<0){
@@ -213,8 +212,6 @@ function totalBandsLength(working_area,sum_gaps_size,number_bands){
   }
 }
 
-
-
 // Create a new Table with a given number of rows
 function newComponentsTable(number_row){
     table.destructor()
@@ -233,8 +230,7 @@ function changeGraphSize(){
 var calcVol = function calcVol(){
   $formData = $('#plateform').serialize()+'&'+$('#movementform').serialize()+'&table='+JSON.stringify(table.getTableValues())
   $endpoint = window.location.origin+'/samplecalc/'
-  console.log($endpoint)
-  console.log($formData)
+  
   $.ajax({
   method: 'POST',
   url:    $endpoint,
@@ -248,25 +244,28 @@ var calcVol = function calcVol(){
     table.estim_time(data.results.slice(-1))
   }
   function calcMethodError(jqXHR, textStatus, errorThrown){
-      console.error("Error calculating estimated volumes", errorThrown)
     }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
   
-  document.getElementById('import-csv-btn').addEventListener('click', function() {
-    if (selectedFile) {
-      var reader = new FileReader();
+  // document.getElementById('import_csv_button').addEventListener('click', function() {
+  //   if (selectedFile) {
+  //     var reader = new FileReader();
+  //     reader.onload = function(e) {
+  //       processCSV(e.target.result);
+  //     };
+  //     reader.readAsText(selectedFile);
+  //   }
+  // });
+
+  document.getElementById('import_csv_file').addEventListener('change', function(event) {
+   
+    var reader = new FileReader();
       reader.onload = function(e) {
         processCSV(e.target.result);
       };
-      reader.readAsText(selectedFile);
-    }
-  });
-
-  document.getElementById('import-csv').addEventListener('change', function(event) {
-    selectedFile = event.target.files[0];
-    document.getElementById('file-name-display').textContent = selectedFile.name;
+      reader.readAsText(event.target.files[0]);
   });
 });
 
@@ -297,6 +296,10 @@ function processCSV(csvData) {
   });
 
   loadDataIntoForm(result);
+  //$('#import-csv').val('');
+  $('#import_csv_file').val('');
+  
+  
 }
 
 function loadDataIntoForm(data) {
@@ -304,7 +307,7 @@ function loadDataIntoForm(data) {
     if (key === "table") {
       loadTableData(data[key]);
     } else {
-      var input = document.querySelector('[name="${key}"]');
+      var input = document.querySelector(`[name="${key}"]`);
       if (input) {
         input.value = data[key];
         input.dispatchEvent(new Event('change', { bubbles: true }));
@@ -325,11 +328,9 @@ function loadTableData(tableData) {
   }
 }
 
-
-
-
-
-
-
-
+$(document).ready(function() {
+  createBandsTable()
+  calcVol()
+  list_of_saved.loadList()
+});
 

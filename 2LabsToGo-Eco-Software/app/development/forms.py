@@ -12,7 +12,7 @@ class PlateProperties_Form(forms.ModelForm):
 
     class Meta:
         model = PlateProperties_Db
-        fields = ['size_x','size_y','offset_left','offset_right','offset_top','offset_bottom']
+        fields = ['size_x','size_y','offset_left','offset_right','offset_bottom']
 
 class DevelopmentBandSettings_Form(forms.ModelForm):
 

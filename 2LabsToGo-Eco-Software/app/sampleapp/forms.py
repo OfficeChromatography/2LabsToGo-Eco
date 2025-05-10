@@ -10,7 +10,7 @@ class SampleApplication_Form(forms.ModelForm):
 class PlateProperties_Form(forms.ModelForm):
     class Meta:
         model = PlateProperties_Db
-        fields = ['size_x','size_y','offset_left','offset_right','offset_top','offset_bottom']
+        fields = ['size_x','size_y','offset_left','offset_right','offset_bottom']
 
 
 class BandSettings_Form(forms.ModelForm):
@@ -34,7 +34,7 @@ class MovementSettings_Form(forms.ModelForm):
 class PressureSettings_Form(forms.ModelForm):
     class Meta:
         model = PressureSettings_Db
-        fields = ['pressure','frequency', 'temperature','nozzlediameter', "rinsingPeriod"]
+        fields = ['pressure','frequency', 'temperature','nozzlediameter', "rinsingPeriod", 'rinsingSolvent']
 
     def clean_temperature(self):
         temperature = self.cleaned_data["temperature"]
@@ -45,13 +45,13 @@ class PressureSettings_Form(forms.ModelForm):
     def clean_rinsingPeriod(self):
         rinsingPeriod = self.cleaned_data["rinsingPeriod"]
         if not rinsingPeriod:
-            return 999999
+            return 99999
         return rinsingPeriod
 
 class BandsComponents_Form(forms.ModelForm):
     class Meta:
         model = BandsComponents_Db
-        fields = ['band_number','product_name', 'volume', 'type', 'density', 'viscosity'] #'company','region','year',
+        fields = ['band_number','product_name', 'volume', 'type', 'sample', 'density', 'viscosity'] #'company','region','year',
         exclude = ['sample_application']
 
     def clean_band_number(self):

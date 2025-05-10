@@ -1,43 +1,89 @@
-# 2LabsToGo-Eco-Software
+# OC-Manager 4.0
 ## Install
 The installation process is really simple. 
 
-2LabsToGo-Eco-Software works fine on a 'Raspberry Pi 4' with 4Gb RAM memory and installed on it through [Raspberry Pi Imager](https://www.raspberrypi.com/software/).
+OC-Manager 4.0 works fine on a 'Raspberry Pi 4' with 4Gb RAM memory and [Raspberry Pi OS](https://www.raspberrypi.com/software/) installed on it through Raspberry Pi Imager, which was installed by:
+```
+sudo apt install rpi-imager
+```  
 
-As operation system, Raspberry Pi OS (Legacy, 64-bit, Debian Bullseye) is recommended. 
+### 0. Install git
+Before we begin with the installation, we need to install git.
+```bash
+sudo apt-get update && sudo apt-get -y upgrade
+sudo apt-get install git
+```
 
-To clone the 2LabsToGo-Eco repository, consult this [README](https://github.com/OfficeChromatography/2LabsToGo-Eco/blob/main/README.md).
+### 1. Clone the git repository
+The simplest way to clone a git repository is opening a Terminal (`Ctrl+t`), then go to the directory where you would like to have the folder that contains all the configuration files of your OC-LAB **(and between those, it is included the OC-Manager files too)**  
 
-### Execute 'install.py'
-To install 2LabsToGo-Eco-Software, go to the folder that contains the 2LabsToGo-Eco-Software with
+E.g.
+```bash
+cd ~/Desktop
+```
+Finally, copy and paste the next command and press enter.
 
 ```bash
-cd /path/to/your/2LabsToGo-Eco-Software
+git clone https://github.com/OfficeChromatography/OC-Manager4.git
 ```
-Then execute
+
+### 2. Execute 'install.py'
+The next step is to execute a bash script which contains, the necessary softwares to run the OC-Manager. If you close the Terminal open it again (remember, `Ctrl+t`). Now go to the folder that contains the OC-Lab files, it is
+
+*cd* follow by the path to the folder.
+
+```bash
+cd /path/to/your/OC-files
+```
+Then execute,
 ```bash
 python3 install.py
 ```
 
-This will install:
+this will install:
 ```
 docker
-docker compose
+docker-compose
 ```
-After some minutes, 2LabsToGo-Eco-Software is installed in your device.
+Now OC-Manager it's installed in your device.
 
-To start the server execute the run.py file with
+### 3.Before the first execution 
+
+#### With Raspberry Pi
+Depending on the OS change on the docker_compose.yml file. To know the kind of architecture, open a terminal and write:
+
+```
+uname -a 
+```
+
+According to your architecture, change the dockerfile:
+
+```dockerfile
+    image: ocmanager/ocmanager:arm64
+```
+
+```dockerfile
+    image: ocmanager/ocmanager:amd64
+``` 
+
+### 4.OC Manager execution 
+
+Navigate to the path where OC-Manager was installed and execute ./run.py file.
 ```
 python3 run.py 
 ```
-To quit the Django server press
+
+OC-Manager supports at the moment only amd64, arm/v7 and arm64 architectures.
+
+OC-Manager3 was intensively tested with Firefox as browser. Therefore, it is recommended to install this browser:
+
 ```
-ctrl+c 
+sudo apt install firefox-esr
 ```
 
-2LabsToGo-Eco-Software was intensively tested with both Chromium and Firefox as browser.
-
-To use the software consult the [2LabsToGo-Eco-Software Manual](https://github.com/OfficeChromatography/2LabsToGo-Eco/blob/main/2LabsToGo-Eco-Instructions/2LabsToGo-Eco-Software%20Manual.pdf).
+# FIRMWARE
+Firmware installation 
+[OcLab3Firmware](https://github.com/OfficeChromatography/OCLab3-Hardware)
 
 # Useful guides
 

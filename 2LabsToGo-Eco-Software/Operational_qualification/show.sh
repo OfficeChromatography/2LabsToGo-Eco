@@ -1,4 +1,4 @@
-#script to run the operational qualification of 2LabsToGo-Eco
+#script to run the operational qualification of 2LabsToGo
 #Needle motor must be completly up!!
 #show.sh
 
@@ -7,7 +7,7 @@ yes | sudo chmod 666 /dev/ttyAMA1
 
 aplay --quiet BusinessEcho.wav
 echo ""
-echo "This is a show presenting the different 2LabToGo-Eco activities."
+echo "This is a show presenting the different 2LabToGo activities."
 echo ""
 echo "Check that there are no tools and anything else inside the instrument!"
 echo ""
@@ -65,7 +65,7 @@ python3 caselight-off.py
 echo "Now the camera is going to capture images at white light, UV 265 nm and UV 365 nm."
 python3 photo-pos.py
 python3 white-LED-on.py
-libcamera-still -t 5000 -o vis.jpg #image saved in folder 2LabsToGo-Eco-Software/Operational_qualification
+libcamera-still -t 5000 -o vis.jpg #image saved in folder 2LabsToGo-Software/Operational_qualification
 python3 white-LED-off.py
 echo""
 
@@ -77,7 +77,7 @@ python3 uv365_on.py
 libcamera-still -t 5000 -o uv365.jpg
 python3 uv365_off.py
 
-python3 distort-fisheye.py --file-format jpg --source-folder ~/2LabsToGo-Eco/2LabsToGo-Eco-Software/Operational_qualification --output-folder ~/2LabsToGo-Eco/2LabsToGo-Eco-Software/Operational_qualification/corrected
+python3 distort-fisheye.py --file-format jpg --source-folder ~/2LabsToGo/2LabsToGo-Software-Software/Operational_qualification --output-folder ~/2LabsToGo/2LabsToGo-Software/Operational_qualification/corrected
 
 python3 y-home.py
 

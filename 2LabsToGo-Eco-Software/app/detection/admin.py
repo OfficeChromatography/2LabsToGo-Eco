@@ -4,7 +4,6 @@ from django.db import models
 
 
 admin.site.register(Images_Db)
-admin.site.register(Hdr_Image)
 admin.site.register(Detection_ZeroPosition)
 admin.site.register(UserControls_Db)
 admin.site.register(Leds_Db)

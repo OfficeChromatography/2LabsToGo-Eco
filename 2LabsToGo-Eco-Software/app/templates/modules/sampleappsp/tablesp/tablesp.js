@@ -1,5 +1,4 @@
-const OPTIONS = ["Water", "Methanol", "Acetone", "2-Butanol", "n-Hexane", "Pentane", "Cyclohexane", "Carbon Tetrachloride", "Toluene", "Chloroform", "Dichloromethane", "Diethyl ether", "Ethyl acetate", "Ethanol", "Pyridine"]
-
+const OPTIONS = ["Acetone", "Acetonitrile", "2-Butanol", "Carbon Tetrachloride", "Chloroform", "Cyclohexane", "Dichloromethane", "Diethyl ether", "Ethanol", "Ethyl acetate", "n-Hexane", "Methanol", "Pentane", "2-Propanol", "Pyridine", "Toluene", "Water"]
 let tot_time = 0
 let checkbox = 1
 
@@ -78,11 +77,21 @@ class Table {
     }
 
     loadTable(data) {
-        data.forEach(function (data, index, array) {
-            this.row[index].loadDataInRow(data)
-        }, this)
+        if (data.length > this.numberOfRows) {
+            this.#addMultipleRows(data.length - this.numberOfRows);
+        } else if (data.length < this.numberOfRows) {
+            this.destructor();
+            this.#addMultipleRows(data.length);
+        }
+        data.forEach((rowData, index) => {
+            if (this.row[index]) {
+                this.row[index].loadDataInRow(rowData);
+            } else {
+                console.warn(`No row found for index ${index}`);
+            }
+        });
+        
     }
-
     estim_time(data) {
         if (data != 0) {
             //p.innerText = "       Estimated time for application : " + data[0].total_time.toFixed(3) + " min"
@@ -267,6 +276,7 @@ class Table {
         }
 
         loadDataInRow(data) {
+            
             this.setBandNumber(data.band_number)
             this.setProduct(data.product_name)
             this.setVolumeValue(data.volume)
@@ -275,6 +285,8 @@ class Table {
             this.setViscosity(data.viscosity)
             this.setSample(data.sample)
             this.setOption(checkbox)
+            this.row.find('.volume').trigger('change');
+            this.row.find('.solvent_select').trigger('change');
         }
 
         eliminate() {
@@ -295,7 +307,6 @@ $(document).on('click', '.copybttn', function () {
     
     productName = $(this).parent().find(".product").val()
     
-    console.log(productName) 
 });
 
 $(document).on('click', '.pastebttn', function () {

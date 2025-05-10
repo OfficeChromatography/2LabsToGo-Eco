@@ -14,7 +14,7 @@
 <div class="form-group row">
     <div class="input-group input-group-sm col p-0">
         <label for="id_applications" class="col-xl-3 col-lg-5 col-form-label col-form-label-sm text-truncate px-0 mx-1">Number of passes</label>
-        <input type="number" name="applications" value="10" class="form-control development-flowrate-insidence" step="1" id="id_applications">
+        <input type="number" name="applications" value="0" class="form-control development-flowrate-insidence" step="1" id="id_applications">
         <div class="input-group-append">
             <span class="input-group-text">#</span>
         </div>
@@ -23,7 +23,7 @@
 <!--Waiting Time-->
 <div class="form-group row">
     <div class="input-group input-group-sm col p-0">
-        <label class="col-xl-3 col-lg-5 col-form-label col-form-label-sm text-truncate px-0 mx-1">Waiting Time</label>
+        <p class="col-xl-3 col-lg-5 col-form-label col-form-label-sm text-truncate px-0 mx-1">Waiting Time</p>
         <div class="d-flex align-items-center">
             <i id="modalWaitingTimesLauncher" class="fas fa-external-link-alt"></i>
         </div>
@@ -51,6 +51,7 @@
             <option value="Butanol">2-Butanol</option>
             <option value="Pyridine">Pyridine</option>
             <option value="Water">Water</option>
+            <option value="Acetonitrile">Acetonitrile</option>
             <option value="Specific">Specific</option>
         </select>
     </div>
@@ -76,14 +77,14 @@
     <div class="col-xl-6 m-0 p-0">
         <div class="input-group input-group-sm col p-0">
             <label for="printBothways_id" class="col-xl-3 col-lg-5 col-form-label col-form-label-sm text-truncate px-0 mx-1">Print Bothways</label>
-            <input class="btn btn-primary" type="checkbox" name="printBothways" id="printBothways_id" checked>
+            <input class="btn btn-primary" type="checkbox" name="printBothways"  id="printBothways_id" checked >
+            <!--<input type="hidden" name="printBothways" value="true">-->
         </div>
     </div>
     <div class="col-xl-6 px-1 pt-lg-3">
         <span id="flowrate">Estimated flowrate: 26 ul/s</span>
     </div>
 </div>
-<p><b>Do not forget to open and close the Waiting Time table before starting a new development method! Otherwise the developoment cannot be started.</b></p>
 <script src="{% static 'modules/development/devproperties.js' %}"></script>
 
 

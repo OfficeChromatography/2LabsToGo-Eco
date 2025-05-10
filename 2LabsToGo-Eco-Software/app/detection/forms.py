@@ -30,7 +30,6 @@ class SaveShot(forms.Form):
                                         )
 
 class CameraControlsForm(forms.ModelForm):
-    # Camera Controls
         class Meta:
             model = CameraControls_Db
 
@@ -65,7 +64,7 @@ class CameraControlsForm(forms.ModelForm):
                                 decimal_places=1,
                                 max_value=26,
                                 min_value=1,
-                                widget=forms.NumberInput(attrs={'size': '9', 'placeholder':'Off', 'class':'form-control'}))
+                                widget=forms.NumberInput(attrs={'size': '9', 'placeholder':'0', 'class':'form-control'}))
         
         colour_gains = forms.CharField(label='Colour Gains',
                     required=False,

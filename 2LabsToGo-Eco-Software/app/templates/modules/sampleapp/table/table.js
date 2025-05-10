@@ -1,4 +1,4 @@
-const OPTIONS = ["Water", "Methanol", "Ethanol", "iso-Propanol", "2-Butanol", "Acetone", "Ethyl acetate"]
+const OPTIONS = ["Acetone", "Acetonitrile", "2-Butanol", "Ethanol", "Ethyl acetate", "Methanol", "2-Propanol", "Water", "Cyclohexane", "Toluene"]
 
 let tot_time = 0
 let checkbox = 1
@@ -68,21 +68,18 @@ class Table {
                 data.push(value.getRowData())
             })
         }
-        console.log(data)
         return data
     }
-
     setTableCalculationValues(data) {
         data.forEach((row, index) => {
-            this.row[index].setCalculatedData(row)
-        })
-        console.log(data)
-        
-    }
+          if (this.row[index]) {
+            this.row[index].setCalculatedData(row);
+          }
+        });
+      }
+      
 
     loadTable(data) {
-        console.log("Loading table with data:", data);
-        // Ensure we have the correct number of rows
         if (data.length > this.numberOfRows) {
             this.#addMultipleRows(data.length - this.numberOfRows);
         } else if (data.length < this.numberOfRows) {
@@ -95,8 +92,7 @@ class Table {
             } else {
                 console.warn(`No row found for index ${index}`);
             }
-        });
-        console.log("Table loaded");    
+        });  
         
     }
 
@@ -114,7 +110,7 @@ class Table {
             this.row = $(".band-row").first().clone().show().appendTo("#tbody-band");
             this.solventOptions = OPTIONS;
             this.#setSolventOptions();
-            this.calculationMethod = calculationMethod
+            this.calculationMethod = calculationMethod   //Semikolon?
             this.setCalculateMethod();
 
 
@@ -153,7 +149,7 @@ class Table {
 
 
         setTotalvolume(value) {
-            console.log("setTotalvolume")
+           
             this.row.find('.total-volume').text(value.toFixed(3))
         }
         getTotalvolume() {
@@ -184,7 +180,7 @@ class Table {
         }
 
         setProduct(value) {
-            console.log(`Setting product: ${value}`);
+            
             this.row.find('.product').val(value)
         }
         getProduct() {
@@ -199,11 +195,13 @@ class Table {
         }
         getVolumeValue() {
             let value = this.row.find('.volume').val()
+            
+           
             return this.#sanityUndefined(value)
         }
 
         setBandNumber(value) {
-            console.log(`Setting band number: ${value}`);
+            
             this.row.find('.band-number').text(value)
         }
         getBandNumber() {
@@ -255,6 +253,7 @@ class Table {
         }
 
         #sanityUndefined(value) {
+        
             if (value == undefined) {
                 value = "";
             }
@@ -278,7 +277,7 @@ class Table {
                 "minimum_volume": this.getMinimumVolume()
 
                 }
-                
+            
             return data
         }
 
@@ -290,24 +289,22 @@ class Table {
         }
 
         loadDataInRow(data) {
-            console.log("Loading data into row:", data);
-            for (let key in data) {
-                if (data.hasOwnProperty(key)) {
-                    let input = this.row.find(`[name=${key}]`);
-                    if (input.is("select")) {
-                        input.val(data[key]).trigger('change');
-                    } else {
-                        input.val(data[key]);
+           
+                for (let key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        let input = this.row.find(`[name=${key}]`);
+                        if (input.is("select")) {
+                            input.val(data[key]).trigger('change');
+                        } else {
+                            input.val(data[key]);
+                        }
                     }
                 }
-            }
-            console.log("Data loaded into row");
         }
 
         
 
         loadDataInRow(data) {
-            console.log("Loading data into row:", data);
         
             for (let key in data) {
                 if (data.hasOwnProperty(key)) {
@@ -318,9 +315,7 @@ class Table {
                         } else {
                             input.val(data[key]); 
                         }
-                    } else {
-                        console.warn(`No input found for key: ${key}`);
-                    }
+                    } 
                 }
             }
         
@@ -336,7 +331,6 @@ class Table {
             this.row.find('.volume').trigger('change');
             this.row.find('.solvent_select').trigger('change');
         
-            console.log("Data loaded into row");
         }
         
 
@@ -358,7 +352,6 @@ $(document).on('click', '.copybttn', function () {
     
     productName = $(this).parent().find(".product").val()
     
-    console.log(productName) 
 });
 
 $(document).on('click', '.pastebttn', function () {

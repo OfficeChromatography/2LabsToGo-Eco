@@ -5,12 +5,22 @@
             <button id='export_bttn' class="btn btn-outline-primary" type="button">Export</button>
             <button id='new_method_bttn' class="btn btn-outline-primary" type="button">New</button>
         </div>
-            <input id='new_filename' name="filename" type="text" class="form-control" placeholder="Name" aria-label="" value="">
-            <input id="selected-element-id" name="selected-element-id" hidden value="">
+            <input id='new_filename' name="filename" type="text" class="form-control" placeholder="Name" aria-label="" value=""  readonly>
+            <input id="selected-element-id" name="selected-element-id"  hidden value=""  readonly>
         <div class="input-group-append">
             <button id='save_bttn' class="btn btn-outline-success" type="button">Save</button>
         </div>
+        
     </div>
 </form>
     <div class="list-group p-3" id="list-load" role="tablist" style="max-height:300px; overflow-y:scroll;"></div>
+    
+    <div class="form-group">
+        <!-- <label for="import_csv_file" class="btn btn-outline-primary mt-2">Choose file</label> -->
+        <label for="import_csv_file" class="btn btn-outline-primary mt-2">Import CSV</label>
+        <input type="file" name="csv_file" id="import_csv_file" class="form-control" style="display:none">
+        <!-- <button type="submit" id="import_csv_button" class="btn btn-primary ">Import CSV</button> -->
+        <!-- <button id='import_csv_button' class="btn btn-outline-primary" type="submit">Import CSV</button> -->
+
+    </div>
 <script src="{% static 'modules/loadlist/loadlist.js' %}"></script>

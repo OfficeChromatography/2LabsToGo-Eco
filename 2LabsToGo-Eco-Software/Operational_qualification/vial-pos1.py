@@ -21,10 +21,10 @@ command(ser, "M400\r\n")
 
 command(ser, "G28Z\r\n")      #homing z1
 command(ser, "G28X\r\n")      #Homing X
-command(ser, "G0X1F4000\r\n")      #x-cart to funnel
+command(ser, "G0X1F4000\r\n")      #x-cart to waste
 command(ser, "M400\r\n")
 
-command(ser, "G0Z144F2000\r\n") 
+command(ser, "G0Z145F2000\r\n") 
 command(ser, "M400\r\n")
 command(ser, "G0E30F4000\r\n")
 command(ser, "M400\r\n")
@@ -33,7 +33,7 @@ time.sleep(5)                   #rinsing 5 s
 command(ser, "G0E0\r\n")        #needle up
 command(ser, "M400\r\n")
     
-command(ser, "G0Z168.5F2000\r\n") #pos rinsing vial
+command(ser, "G0Z169.5F2000\r\n") #pos vial 1
 command(ser, "M400\r\n")
 command(ser, "G0E30F4000\r\n")  #needle in vial 1
 command(ser, "M400\r\n")

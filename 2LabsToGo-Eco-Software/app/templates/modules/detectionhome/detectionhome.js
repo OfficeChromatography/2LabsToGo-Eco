@@ -11,7 +11,6 @@ $('#hommingModal').on('hidden.bs.modal', function (e) {
 
 $('#setHome').on('click',function(e){
   data={'setzero':zero_position.toString()}
-  console.log(data);
   $.ajax({
     method: 'POST',
     url:    window.location.origin+'/detection-setuphomming/',

@@ -23,7 +23,6 @@ $('#savebttn').on('click', function (e) {
 $('#list-load').on('click','#list-home-list', function (e) {
 e.preventDefault()
 data={'filename':$(this)[0].innerHTML, 'LOADFILE':''}
-console.log(data);
 $.ajax({
   method: 'GET',
   url:    window.location.origin+'/gcode-editor/',
@@ -94,14 +93,11 @@ $("#uploadbttn").on('click' ,function() {
 
 
 $('#file').on('change',function(e){
-                //get the file name
                 var fileName = e.target.files[0];
                 $('#sizesfile').html('Size: '+ Math.round(fileName.size/1000) + ' Kbytes')
-                //replace the "Choose a file" label
                 $(this).next('.custom-file-label').html(fileName.name);
             })
 
-// Functions after ajax call
 function uploadfileMethodSuccess(data, textStatus, jqXHR){
   alertManager(data)
   loadlistofgcodes()

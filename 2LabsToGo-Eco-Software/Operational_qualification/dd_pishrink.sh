@@ -11,15 +11,15 @@ read usb
 
 echo "The disk dump is going to start. It will take a while!"
 
-sudo dd bs=4M if=/dev/mmcblk0 of=$usb/2LabsToGo-Eco.img status=progress
+sudo dd bs=4M if=/dev/mmcblk0 of=$usb/2LabsToGo.img status=progress
 pid=$!
 wait $pid
 
 echo ""
-echo "pishrink will now compress the image file to 2LabsToGo-Eco.img.gz. It also will take a while."
+echo "pishrink will now compress the image file to 2LabsToGo.img.gz. It also will take a while."
 echo ""
 
-sudo pishrink.sh -z $usb/2LabsToGo-Eco.img
+sudo pishrink.sh -z $usb/2LabsToGo.img
 pid=$!
 wait $pid
 

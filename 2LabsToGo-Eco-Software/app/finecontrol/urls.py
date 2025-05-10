@@ -23,12 +23,14 @@ urlpatterns = [
     path('uv265light/', UVLed_Light_265.as_view(), name='uv265light'),
     path('uv365light/', UVLed_Light_365.as_view(), name='uv365light'),
     path('fan/', Fan.as_view(), name='fan'),
+    path('humidity/', Humidity.as_view(), name='humidity'),
     path('drypump/', DryPump.as_view(), name='drypump'),
     path('drypumpControl/', DryPumpControl.as_view(), name='drypumpcontrol'),
     path('oclab/control/', OcLabControl.as_view(), name='oclabcontrol'),
     path('oclab/airsensor/', AirSensorList.as_view(), name='airsensor'),
     path('oclab/airsensor/<int:pk>/', AirSensorDetail.as_view(), name='airsensordetail'),
-    
+    path('wayvalve/', WayValve.as_view(), name='wayvalve'),
+    path('dispensevalve/', DispValve.as_view(), name='dispensevalve'),
     path('method/delete/<int:id>/', MethodDelete.as_view(), name='methoddelete'),
     path('export/<int:id>/', Export.as_view(), name='export')
 ]

@@ -14,6 +14,7 @@ var setData = function (data){
   })
   $(".change-graph-size-parameter").trigger("change")
   table.loadTable(data.bands_components)
+  
 }
 
 var list_of_saved = new listOfSaved("http://127.0.0.1:8000/syringepump/save/",
@@ -22,17 +23,12 @@ var list_of_saved = new listOfSaved("http://127.0.0.1:8000/syringepump/save/",
     getData,
     setData,
     "http://127.0.0.1:8000/syringepump/delete",
+    "syringe_pump"
     )
 
-var application_control = new ApplicationControl('http://127.0.0.1:8000/oclab/control/',
+var application_control = new ApplicationControlSP('http://127.0.0.1:8000/oclab/control/',
                                                 'http://127.0.0.1:8000/syringepump/start/',
                                                 getData)
-
-$(document).ready(function() {
-    createBandsTable()
-    calcVol()
-    list_of_saved.loadList()
-});
 
 $(".change-graph-size-parameter").on("change", function(){
     changeGraphSize()
@@ -90,7 +86,6 @@ function mainCalculations(){
 
     let offset_left_size = parseFloat($("#id_offset_left").val());
     let offset_right_size = parseFloat($("#id_offset_right").val());
-    let offset_top_size = parseFloat($("#id_offset_top").val());
     let offset_bottom_size = parseFloat($("#id_offset_bottom").val());
 
     let gap_size = parseFloat($("#id_gap").val());
@@ -101,7 +96,7 @@ function mainCalculations(){
     let property = $("#id_main_property").val();
 
   // Check if there are missing parameters
-  missing_parameter = (isNaN(plate_x_size)||isNaN(plate_y_size)||isNaN(offset_left_size)||isNaN(offset_right_size)||isNaN(offset_top_size)||isNaN(offset_bottom_size)||isNaN(gap_size)||isNaN(band_height))
+  missing_parameter = (isNaN(plate_x_size)||isNaN(plate_y_size)||isNaN(offset_left_size)||isNaN(offset_right_size)||isNaN(offset_bottom_size)||isNaN(gap_size)||isNaN(band_height))
 
   if(areErrors('#id_parameter_error',missing_parameter)){return}
 
@@ -172,10 +167,9 @@ function nBandsWorkingArea(){
     let plate_y_size = parseFloat($("#id_size_y").val());
     let offset_left_size = parseFloat($("#id_offset_left").val());
     let offset_right_size = parseFloat($("#id_offset_right").val());
-    let offset_top_size = parseFloat($("#id_offset_top").val());
     let offset_bottom_size = parseFloat($("#id_offset_bottom").val());
 
-    working_area = [plate_x_size-offset_left_size-offset_right_size,plate_y_size-offset_top_size-offset_bottom_size]
+    working_area = [plate_x_size-offset_left_size-offset_right_size,plate_y_size-offset_bottom_size]
     if(working_area[0] <= 0 || working_area[1] <= 0 || isNaN(working_area[0]) || isNaN(working_area[1])){
         return [NaN,NaN];
     }
@@ -224,6 +218,7 @@ function changeGraphSize(){
 
 
 var calcVol = function calcVol(){
+
   $formData = $('#plateform').serialize()+'&'+$('#movementform').serialize()+'&table='+JSON.stringify(table.getTableValues())
   $endpoint = window.location.origin+'/syringepumpcalc/'
   $.ajax({
@@ -244,8 +239,9 @@ var calcVol = function calcVol(){
 }
 
 
-
-
-
-
+$(document).ready(function() {
+  createBandsTable()
+  calcVol()
+  list_of_saved.loadList()
+});
 

@@ -12,7 +12,7 @@
     <div class="form-group row">
         <div class="input-group input-group-sm">
             <label for="id_pressure" class="col-xl-3 col-lg-5 col-form-label col-form-label-sm text-truncate" >Pressure</label>
-            <input type="number" name="pressure" value="5" class="form-control change-volume-parameter" step="1" required="" id="id_pressure">
+            <input type="number" name="pressure" value="5" min="5" class="form-control change-volume-parameter" step="1" required="" id="id_pressure" oninput="if (this.value < 5) this.value = 5">
             <div class="input-group-append">
                 <span class="input-group-text">psi</span>
             </div>
@@ -58,14 +58,10 @@
         <div class="input-group input-group-sm">
             <label for="id_nozzlediameter" class="col-xl-3 col-lg-5 col-form-label col-form-label-sm text-truncate">Nozzle</label>
             <select name="nozzlediameter" class="form-control change-volume-parameter" maxlength="120" id="id_nozzlediameter">
-                <option value="0.25">0.25</option>
-                <option value="0.19">0.19</option>
                 <option value="0.13" selected="">0.13</option>
                 <option value="0.10">0.10</option>
                 <option value="0.08">0.08</option>
                 <option value="0.05">0.05</option>
-                <option value="atomizer 22k">atomizer 22k</option>
-                <option value="atomizer 67k">atomizer 67k</option>
             </select>
             <div class="input-group-append">
                 <span class="input-group-text">mm</span>
@@ -74,10 +70,10 @@
     </div>
     <div class="form-group row">
         <div class="input-group input-group-sm">
-            <label for="id_temperature" class="col-xl-3 col-lg-5 col-form-label col-form-label-sm text-truncate">Rinsing Period</label>
-            <input type="number" name="rinsingPeriod" value="0" class="form-control" step="1" id="id_rinsingperiod">
+            <label for="id_rinsingperiod" class="col-xl-3 col-lg-5 col-form-label col-form-label-sm text-truncate">Rinsing Period</label>
+            <input type="number" name="rinsingPeriod" value="99999" class="form-control" step="1" id="id_rinsingperiod">
             <div class="input-group-append">
-                <span class="input-group-text">#cycles</span>
+                <span class="input-group-text">#drops</span>
             </div>
         </div>
     </div>

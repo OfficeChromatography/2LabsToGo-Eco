@@ -1,7 +1,8 @@
 import time
+from datetime import datetime
 
-INIT_POINT_X = 24-4
-INIT_POINT_Y = 5.5-2
+INIT_POINT_X = 20
+INIT_POINT_Y = 3.5
 
 class GcodeGenerator:
     # set these values according to each machine!!!
@@ -9,14 +10,14 @@ class GcodeGenerator:
 
     pos_common= "G0Z"
     vial_9= "145" #rinse bottle
-    vial_8= "268.5" #vial 8
-    vial_7= "254.5" #vial 7
-    vial_6= "240.5" #vial 6
-    vial_5= "226.5" #vial 5
-    vial_4= "212.5" #vial 4
-    vial_3= "198.5" #vial 3
-    vial_2= "184.5" #vial 2
-    vial_1= "170.5" #vial 1
+    vial_8= "267.5" #vial 8
+    vial_7= "253.5" #vial 7
+    vial_6= "239.5" #vial 6
+    vial_5= "225.5" #vial 5
+    vial_4= "211.5" #vial 4
+    vial_3= "197.5" #vial 3
+    vial_2= "183.5" #vial 2
+    vial_1= "169.5" #vial 1
     rin_bot= "145" #rinse bottle
 
     pos_vial9= pos_common + vial_9 #vial 9
@@ -166,11 +167,13 @@ class GcodeGenerator:
         return self.check_return(f"M42P{pin}S{state}")
 
     def start_pump(self):
-        return self.check_return(f"M42P40S255")
+        self.check_return("G50")
+        self.check_return("G4P250")
     
     def stop_pump(self):
-        return self.check_return(f"M42P40S0")
-
+        self.check_return("G51")
+        self.check_return("G4P250")
+        
     def wait(self, time):
         """pauses the command queue and waits for a period of time in seconds"""
         return self.check_return(f"G4S{time}")
@@ -200,107 +203,182 @@ class GcodeGenerator:
         '''Rinse an amount of times with the rinsing solution'''
         self.check_return("M92Z400")
         self.check_return("M203Z40")
-        self.check_return("M42P49S0")    #z-switch
-        self.check_return("M42P36S0")    #3-way valve switch
+        self.check_return("M42P49S0")
+        self.check_return("M42P36S0")
         self.check_return("G0X1F5000")
         self.check_return("G28Z")
         self.check_return(self.pos_rinbot)
-        self.down_sample()
+        self.down_rinsing()
         self.finish_moves()
         for i in range(times):
             self.start_pump()
-            self.finish_moves()
             self.stop_pump()   
-            self.finish_moves()
             self.open_valve_frequency(frequency)
         self.up()
         self.finish_moves()
-        self.check_return("M203Z40")
         self.check_return("G28Z")
         self.finish_moves()
+        self.check_return("G28X")
 
     def warmup_window(self, times, frequency):
         '''Warm up the nozzle with an amount of drops of rinsing solution'''
-        
+        #modified for drop volume tests
         self.check_return("M92Z400")
         self.check_return("M203Z40")
-        self.check_return("M42P49S0")    #z-switch
-        self.check_return("M42P36S0")    #3-way valve switch
-        self.check_return("G28X")
+        self.check_return("M42P49S0")
+        self.check_return("M42P36S0")
+        self.check_return("G28Z")
         self.check_return("G0X1F5000")
-        self.check_return("G28YZ")
-        self.finish_moves()
         self.check_return(self.pos_rinbot)
-        self.check_return("G0X1F5000")
+        self.finish_moves() 
         self.down_rinsing()
-        self.finish_moves()        
+        self.finish_moves() 
+
         a = 0
         while (a < 4):
             self.start_pump()
-            
-            self.finish_moves()
             self.stop_pump()
-            
-            self.finish_moves()
             self.open_valve_frequency(2)
-            a += 1        
+            a += 1 
         i = 0
         while (i < times):
             j = 0
             self.increase()
             while (j < 25):
                 self.open_valve_frequency(frequency)
-                self.wait_ms(200)
-                self.finish_moves()
+                self.wait_ms(100)
                 j += 1
-            self.open_valve_frequency(2)
             i += 1    
         self.up()
         self.finish_moves()
-        self.stop_pump()
+        self.check_return("G28ZX")
         self.finish_moves()
-        self.check_return("G28Z")
-        self.finish_moves()
-        self.start_pump()
-        self.finish_moves()
-
+        
     def set_new_zero_position(self, x, y,speed):
         self.homming("XY")
         self.linear_move_xy(x, y, speed)
         self.set_position_xy(0, 0)
         self.finish_moves()    
 
-    def rinsing(self, nozzlediameter):
-        '''Rinse 8 times with the rinsing solution'''
-        self.check_return("M92Z400")     #Set Axis Steps-per-unit
-        self.check_return("M203Z40")     #set max feedrate
-        self.check_return("M42P49S0")    #z-switch
-        self.check_return("M42P36S0")    #3-way valve switch
+    def rinsing(self, nozzlediameter, rinsingSolvent):
+        '''Rinse X times with the rinsing solution'''
+        self.check_return("M92Z400")
+        self.check_return("M203Z40")
+        self.check_return("M42P49S0")
+        self.check_return("M42P36S0")
         self.check_return("G0X1F5000")
         self.check_return(self.pos_rinbot)
-        self.down_sample()
-        self.finish_moves() 
-        if nozzlediameter == '0.08':
-            j = 42
+        print("======================")
+        print("Rinsing Solvent:",rinsingSolvent)
+        print("======================")
+        self.down_rinsing()
+        self.finish_moves()
+        
+        j = 0 
+        sol = 0
+        
+        if nozzlediameter == '0.05':
+            if rinsingSolvent == 'Acetone':
+                sol = 232
+            elif rinsingSolvent == 'Ethyl acetate':
+                sol = 261
+            elif rinsingSolvent == 'Methanol':
+                sol = 233
+            elif rinsingSolvent == 'Ethanol':
+                sol = 290
+            elif rinsingSolvent == '2-Propanol':
+                sol = 377
+            elif rinsingSolvent == '2-Butanol':
+                sol = 452
+            elif rinsingSolvent == 'Water':
+                sol = 272
+            elif rinsingSolvent == 'Acetonitrile':
+                sol = 216
+            elif rinsingSolvent == 'Cyclohexane':
+                sol = 352
+            elif rinsingSolvent == 'Toluene':
+                sol = 340
+        elif nozzlediameter == '0.08':
+            if rinsingSolvent == 'Acetone':
+                sol = 78
+            elif rinsingSolvent == 'Ethyl acetate':
+                sol = 95
+            elif rinsingSolvent == 'Methanol':
+                sol = 86
+            elif rinsingSolvent == 'Ethanol':
+                sol = 108
+            elif rinsingSolvent == '2-Propanol':
+                sol = 137
+            elif rinsingSolvent == '2-Butanol':
+                sol = 158
+            elif rinsingSolvent == 'Water':
+                sol = 112
+            elif rinsingSolvent == 'Acetonitrile':
+                sol = 86
+            elif rinsingSolvent == 'Cyclohexane':
+                sol = 118
+            elif rinsingSolvent == 'Toluene':
+                sol = 117
         elif nozzlediameter == '0.10':
-            j = 23
+            if rinsingSolvent == 'Acetone':
+                sol = 50
+            elif rinsingSolvent == 'Ethyl acetate':
+                sol = 51
+            elif rinsingSolvent == 'Methanol':
+                sol = 55
+            elif rinsingSolvent == 'Ethanol':
+                sol = 68
+            elif rinsingSolvent == '2-Propanol':
+                sol = 90
+            elif rinsingSolvent == '2-Butanol':
+                sol = 108
+            elif rinsingSolvent == 'Water':
+                sol = 67
+            elif rinsingSolvent == 'Acetonitrile':
+                sol = 48
+            elif rinsingSolvent == 'Cyclohexane':
+                sol = 66
+            elif rinsingSolvent == 'Toluene':
+                sol = 67
         elif nozzlediameter == '0.13':
-            j = 18
-        elif nozzlediameter == 'atomizer 67k':
-            j = 35 
-        i = 0
-        while (i < 6):            
-            j_cont = 0
-            while (j_cont < j): 
-                self.start_pump()
-                self.finish_moves()
-                self.stop_pump()
-                self.finish_moves()
+            if rinsingSolvent == 'Acetone':
+                sol = 67
+            elif rinsingSolvent == 'Ethyl acetate':
+                sol = 85
+            elif rinsingSolvent == 'Methanol':
+                sol = 81
+            elif rinsingSolvent == 'Ethanol':
+                sol = 104
+            elif rinsingSolvent == '2-Propanol':
+                sol = 145
+            elif rinsingSolvent == '2-Butanol':
+                sol = 175
+            elif rinsingSolvent == 'Water':
+                sol = 103
+            elif rinsingSolvent == 'Acetonitrile':
+                sol = 74
+            elif rinsingSolvent == 'Cyclohexane':
+                sol = 103
+            elif rinsingSolvent == 'Toluene':
+                sol = 104
+
+        j = 0
+        for j in range(sol):
+            self.start_pump()
+            self.stop_pump()
+            if nozzlediameter == '0.13':
                 self.open_valve_frequency(2)
-                j_cont += 1            
-            i += 1
+            else:
+                self.open_valve_frequency(1)
         self.up()
         self.finish_moves()
+
+    def start_prinTime(self):
+        return self.check_return(f"M75")
+        
+    def prinTime(self):
+        '''this command reports the print job time'''
+        return self.check_return(f"M31")
 
     def set_new_zero_position(self, x, y,speed):
         self.homming("XY")
@@ -330,67 +408,141 @@ class GcodeGenerator:
     
     def down_sample(self):
         '''Inject the needle on the vial'''
-        return self.check_return(f"G0E47")
+        return self.check_return(f"G0E46")
 
-    def sample_rinsing(self,frequency, nozzlediameter): 
+    def sample_rinsing(self,frequency, nozzlediameter, fluid): 
         '''Rinse X times with the sample and then warm up the nozzle with 200 sample drops '''
         self.check_return("G0X1F5000")
+        self.finish_moves()
+        print("======================")
+        print("fluid",fluid)
+        print("nozzlediameter",nozzlediameter)
+        print("======================")
         
-        if nozzlediameter == '0.08':
-            j = 23
-        elif nozzlediameter == '0.10':
-            j = 13
-        elif nozzlediameter == '0.13':
-            j = 10
-        elif nozzlediameter == 'atomizer 67k':
-            j = 20
         i = 0
-        while (i < 6):            
-            j_cont = 0
-            while (j_cont < j):
-                self.start_pump()
-                self.finish_moves()
-                self.stop_pump()
-                self.finish_moves()
+        sam = 0
+        
+        if nozzlediameter == '0.05':
+            if fluid == 'Acetone':
+                sam = 147
+            elif fluid == 'Ethyl acetate':
+                sam = 167
+            elif fluid == 'Methanol':
+                sam = 148
+            elif fluid == 'Ethanol':
+                sam = 186
+            elif fluid == '2-Propanol':
+                sam = 242
+            elif fluid == '2-Butanol':
+                sam = 294
+            elif fluid == 'Water':
+                sam = 174
+            elif fluid == 'Acetonitrile':
+                sam = 136
+            elif fluid == 'Cyclohexane':
+                sam = 150
+            elif fluid == 'Toluene':
+                sam = 150
+        elif nozzlediameter == '0.08':
+            if fluid == 'Acetone':
+                sam = 45
+            elif fluid == 'Ethyl acetate':
+                sam = 55
+            elif fluid == 'Methanol':
+                sam = 50
+            elif fluid == 'Ethanol':
+                sam = 64
+            elif fluid == '2-Propanol':
+                sam = 83
+            elif fluid == '2-Butanol':
+                sam = 97
+            elif fluid == 'Water':
+                sam = 67
+            elif fluid == 'Acetonitrile':
+                sam = 49
+            elif fluid == 'Cyclohexane':
+                sam = 71
+            elif fluid == 'Toluene':
+                sam = 70
+        elif nozzlediameter == '0.10':
+            if fluid == 'Acetone':
+                sam = 25
+            elif fluid == 'Ethyl acetate':
+                sam = 26
+            elif fluid == 'Methanol':
+                sam = 29
+            elif fluid == 'Ethanol':
+                sam = 37
+            elif fluid == '2-Propanol':
+                sam = 52
+            elif fluid == '2-Butanol':
+                sam = 64
+            elif fluid == 'Water':
+                sam = 37
+            elif fluid == 'Acetonitrile':
+                sam = 24
+            elif fluid == 'Cyclohexane':
+                sam = 36
+            elif fluid == 'Toluene':
+                sam = 37
+        elif nozzlediameter == '0.13':
+            if fluid == 'Acetone':
+                sam = 37
+            elif fluid == 'Ethyl acetate':
+                sam = 48
+            elif fluid == 'Methanol':
+                sam = 46
+            elif fluid == 'Ethanol':
+                sam = 62
+            elif fluid == '2-Propanol':
+                sam = 89
+            elif fluid == '2-Butanol':
+                sam = 110
+            elif fluid == 'Water':
+                sam = 61
+            elif fluid == 'Acetonitrile':
+                sam = 42
+            elif fluid == 'Cyclohexane':
+                sam = 61
+            elif fluid == 'Toluene':
+                sam = 61
+        i = 0
+        for i in range(sam):
+            self.start_pump()
+            self.stop_pump()
+            if nozzlediameter == '0.13':
                 self.open_valve_frequency(2)
-                j_cont += 1             
-            i += 1
+            else:
+                self.open_valve_frequency(1)
+        '''warmup'''
         k = 0        
         while (k < 8):
             self.start_pump()
-            self.finish_moves()
             self.stop_pump()
-            self.finish_moves()
             m = 0
-            while (m < 25 ):
+            while (m < 10):
                 self.open_valve_frequency(frequency)
-                self.finish_moves()
-                self.wait_ms(200)
-                self.start_pump()
-                self.finish_moves()
-                self.stop_pump()
+                self.wait_ms(100)
                 m += 1
             self.start_pump()
-            self.finish_moves()
             self.stop_pump()
-            self.open_valve_frequency(2)
-            self.finish_moves()
+            if nozzlediameter == '0.13':
+                self.open_valve_frequency(2)
+                self.finish_moves()
+            else:
+                self.open_valve_frequency(1)
+                self.finish_moves()
             k += 1        
-        self.increase()
-        self.finish_moves()
 
     def increase(self):
-        '''Start the pump three times to increase the pressure'''
+        '''Start the pump two times to increase the pressure'''
         i=0
-        while(i < 1):
+        while(i < 2):
             self.start_pump()
-            self.finish_moves()
             self.stop_pump()
-            self.finish_moves()
             i += 1
-        self.finish_moves()
-    
-    def application(self,frequency,list_of_bands,waitTime,speed,list_sample,rinsingPeriod, nozzlediameter): 
+        
+    def application(self,frequency,list_of_bands,waitTime,speed,list_sample,rinsingPeriod, nozzlediameter, rinsingSolvent, list_fluid): 
         self.check_return("M92Z400")    #Set Axis Steps-per-unit
         self.check_return("M203Z40")    #max feedrate
         self.check_return("M42P49S0")   #z-switch
@@ -411,7 +563,7 @@ class GcodeGenerator:
                 self.up()
                 self.finish_moves()
                 self.check_return(self.positions[list_sample[i] - 1])
-                self.down_rinsing()
+                self.down_sample()
                 self.finish_moves()        
             aux = list_sample[i]
             flag = 0
@@ -427,18 +579,18 @@ class GcodeGenerator:
                     mod = 0
             elif (len(list_sample) == 1):
                 flag = 4
-                self.sample_rinsing(frequency, nozzlediameter)
+                self.sample_rinsing(frequency, nozzlediameter, list_fluid[i])
                 
             else:
                 if (aux == list_sample[i-1]):
                     flag = 3
                 
             if (temp == 1):
-                self.sample_rinsing(frequency, nozzlediameter)
+                self.sample_rinsing(frequency, nozzlediameter, list_fluid[i])
                 temp = 0
                 mod = 1 
             if (flag == 0 and step != 1):
-                self.sample_rinsing(frequency, nozzlediameter)
+                self.sample_rinsing(frequency, nozzlediameter, list_fluid[i])
             elif(step == 1 and flag == 0):
                 step = 0
             direction_y = 0
@@ -458,16 +610,15 @@ class GcodeGenerator:
                     self.check_return("G0X1F5000")
                     self.finish_moves()
                     self.start_pump()
-                    self.finish_moves()
                     self.stop_pump()
                     self.open_valve_frequency(2)
                     decrement = rinsingPeriod
             if (flag == 0 or flag == 3 or flag == 4):
                 self.up()
                 self.finish_moves()         
-                self.rinsing(nozzlediameter) 
+                self.rinsing(nozzlediameter, rinsingSolvent) 
             i += 1
-        self.check_return("M42P37S0")
+        self.check_return("M42P37S0")  #dispensing valve
 
     def load_vials(self):
         '''Load/Unload the vials'''
@@ -622,6 +773,7 @@ class GcodeGeneratorSP:   #syringe pump
         self.check_return("G0X1F5000")
         self.pressurize("10")
         self.open_valve_frequency("2")
+        self.check_return("G28X")
 
     def set_new_zero_position(self, x, y,speed):
         self.homming("XY")

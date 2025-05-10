@@ -1,0 +1,32 @@
+{% load static %}
+<div class="container">
+  <div class="d-flex justify-content-between py-2">
+    <p class="text-center  m-0">Threshold</p>
+    <input class="custom-range mx-2" name="thresholdrange" value='20' type="range" min="10" max="80" step="1" id='thresholdrange'/>
+    <input type="number" class='form-control' value="20" id='thresholdtext' min="10" max="80" style="width: 5em"/>
+  </div>
+  <br>
+   <div class="float-right">
+  <button class="btn btn-secondary btn-icon-split btn-sm" id='thresholdcontrol'>
+    <span class="icon text-white-50">
+      <i class="fas fa-forward"></i>
+    </span>
+    <span class="text">Set Threshold</span>
+  </button>
+</div>
+</div>
+<div class="float-left">
+    <button class="btn btn-success btn-icon-split btn-sm" id='checkon'>
+      <span class="icon text-white-50">
+        <i class="fas fa-lightbulb"></i>
+      </span>
+      <span class="text">Start</span>
+    </button>
+    <button class="btn btn-danger btn-icon-split btn-sm" id='checkoff' disabled>
+      <span class="icon text-white-50">
+        <i class="fas fa-lightbulb"></i>
+      </span>
+      <span class="text">Stop</span>
+    </button>
+</div>
+<script src="{% static 'modules/humiditycontrol/humiditycontrol.js' %}"></script>
