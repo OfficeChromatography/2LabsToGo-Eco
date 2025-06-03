@@ -464,6 +464,8 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
 
       case 105: M105(); return;                                   // M105: Report Temperatures (and say "ok")
 
+      //case 1100: M1100(); return;                                 // M1100A0: set humidity control to off
+
       #if FAN_COUNT > 0
         case 106: M106(); break;                                  // M106: Fan On
         case 107: M107(); break;                                  // M107: Fan Off
@@ -875,6 +877,14 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 7219: M7219(); break;                                // M7219: Set LEDs, columns, and rows
       #endif
 
+      #if ENABLED(HUMIDITY_CONTROL_GCODE)
+        case 1100: M1100(); break;
+      #endif
+
+      #if ENABLED(HUMIDITY_CONTROL_GCODE)
+        case 1200: M1200(); break;
+      #endif
+       
       default: parser.unknown_command_warning(); break;
     }
     break;

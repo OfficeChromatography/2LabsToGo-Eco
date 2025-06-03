@@ -100,51 +100,56 @@ void GcodeSuite::M104() {
  */
 void GcodeSuite::M109() {
 
-  // if (DEBUGGING(DRYRUN)) return;
 
-  // #if ENABLED(MIXING_EXTRUDER) && MIXING_VIRTUAL_TOOLS > 1
-  //   constexpr int8_t target_extruder = 0;
-  // #else
-  //   const int8_t target_extruder = get_target_extruder_from_command();
-  //   if (target_extruder < 0) return;
-  // #endif
+//   if (DEBUGGING(DRYRUN)) return;
 
-  // const bool no_wait_for_cooling = parser.seenval('S'),
-  //            set_temp = no_wait_for_cooling || parser.seenval('R');
-  // if (set_temp) {
-  //   const int16_t temp = parser.value_celsius();
-  //   #if ENABLED(SINGLENOZZLE)
-  //     singlenozzle_temp[target_extruder] = temp;
-  //     if (target_extruder != active_extruder) return;
-  //   #endif
-  //   thermalManager.setTargetHotend(temp, target_extruder);
+//   #if ENABLED(MIXING_EXTRUDER) && MIXING_VIRTUAL_TOOLS > 1
+//     constexpr int8_t target_extruder = 0;
+//   #else
+//     const int8_t target_extruder = get_target_extruder_from_command();
+//     if (target_extruder < 0) return;
+//   #endif
 
-  //   #if ENABLED(DUAL_X_CARRIAGE)
-  //     if (dxc_is_duplicating() && target_extruder == 0)
-  //       thermalManager.setTargetHotend(temp ? temp + duplicate_extruder_temp_offset : 0, 1);
-  //   #endif
+//   const bool no_wait_for_cooling = parser.seenval('S'),
+//              set_temp = no_wait_for_cooling || parser.seenval('R');
+//   if (set_temp) {
+//     const int16_t temp = parser.value_celsius();
+//     #if ENABLED(SINGLENOZZLE)
+//       singlenozzle_temp[target_extruder] = temp;
+//       if (target_extruder != active_extruder) return;
+//     #endif
+//     thermalManager.setTargetHotend(temp, target_extruder);
 
-  //   #if ENABLED(PRINTJOB_TIMER_AUTOSTART)
-  //     /**
-  //      * Use half EXTRUDE_MINTEMP to allow nozzles to be put into hot
-  //      * standby mode, (e.g., in a dual extruder setup) without affecting
-  //      * the running print timer.
-  //      */
-  //     thermalManager.check_timer_autostart(true, true);
-  //   #endif
+//     #if ENABLED(DUAL_X_CARRIAGE)
+//       if (dxc_is_duplicating() && target_extruder == 0)
+//         thermalManager.setTargetHotend(temp ? temp + duplicate_extruder_temp_offset : 0, 1);
+//     #endif
 
-  //   #if HAS_DISPLAY
-  //     if (thermalManager.isHeatingHotend(target_extruder) || !no_wait_for_cooling)
-  //       thermalManager.set_heating_message(target_extruder);
-  //   #endif
-  // }
+//     #if ENABLED(PRINTJOB_TIMER_AUTOSTART)
+//       /**
+//        * Use half EXTRUDE_MINTEMP to allow nozzles to be put into hot
+//        * standby mode, (e.g., in a dual extruder setup) without affecting
+//        * the running print timer.
+//        */
+//       thermalManager.check_timer_autostart(true, true);
+//     #endif
 
-  // #if ENABLED(AUTOTEMP)
-  //   planner.autotemp_M104_M109();
-  // #endif
+//     #if HAS_DISPLAY
+//       if (thermalManager.isHeatingHotend(target_extruder) || !no_wait_for_cooling)
+//         thermalManager.set_heating_message(target_extruder);
+//     #endif
+//   }
 
-  // if (set_temp)
-  //   (void)thermalManager.wait_for_hotend(target_extruder, no_wait_for_cooling);
-}
+//   #if ENABLED(AUTOTEMP)
+//     planner.autotemp_M104_M109();
+//   #endif
+
+//   if (set_temp)
+//     (void)thermalManager.wait_for_hotend(target_extruder, no_wait_for_cooling);
+
+
+
+
+  }
 
 #endif // EXTRUDERS

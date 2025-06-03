@@ -37,6 +37,8 @@
  *
  */
 #define CONFIGURATION_H_VERSION 020005
+#define HUMIDITY_CONTROL_GCODE  //turn on drying box fan
+
 
 //===========================================================================
 //============================= Getting Started =============================
@@ -527,7 +529,7 @@
  * When set to any value below 255, enables a form of PWM to the bed that acts like a divider
  * so don't use it unless you are OK with PWM on your bed. (See the comment on enabling PIDTEMPBED)
  */
-#define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
+//#define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
 
 #if ENABLED(PIDTEMPBED)
   //#define MIN_BED_POWER 0

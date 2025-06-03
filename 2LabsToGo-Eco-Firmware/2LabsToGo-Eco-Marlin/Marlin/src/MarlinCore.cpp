@@ -47,6 +47,8 @@
 
 #include "module/stepper/indirection.h"
 
+#include "src/gcode/control/M1100.h"
+
 #ifdef ARDUINO
   #include <pins_arduino.h>
 #endif
@@ -62,6 +64,7 @@
 
 #include "../src/OpenValve/openValve.h"
 #include <DHT.h>
+
 
 #if ENABLED(TOUCH_BUTTONS)
   #include "feature/touch/xpt2046.h"
@@ -190,6 +193,7 @@
 // Initializing pressure sensor
 
 ForceSensor force = ForceSensor();
+int threshold = 22;
 
 // Air Sensor
 #define DHTPIN 42
@@ -692,6 +696,7 @@ inline void manage_inactivity(const bool ignore_stepper_queue=false) {
   #endif
 }
 
+ 
 /**
  * Standard idle routine keeps the machine alive
  */
@@ -701,6 +706,8 @@ void idle(
     bool no_stepper_sleep/*=false*/
   #endif
 ) {
+
+
   #if ENABLED(POWER_LOSS_RECOVERY) && PIN_EXISTS(POWER_LOSS)
     recovery.outage();
   #endif
@@ -1233,20 +1240,24 @@ void setup() {
  *    as long as idle() or manage_inactivity() are being called.
  */
 
+bool is_dryingH_active = false;
 
 void loop() {
   do {
-    // float pressure;
     idle();
-
+    if (is_dryingH_active){
+      periodic_humidity_check();
+    }
+    
     #if ENABLED(SDSUPPORT)
       card.checkautostart();
       if (card.flag.abort_sd_printing) abortSDPrinting();
       if (card.sdprinting_done_state) finishSDPrinting();
     #endif
 
-    queue.advance();
+    queue.advance();   
 
     endstops.event_handler();
   } while (ENABLED(__AVR__)); // Loop forever on slower (AVR) boards
 }
+

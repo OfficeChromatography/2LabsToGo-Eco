@@ -281,6 +281,9 @@
  *
  * T0-T3 - Select an extruder (tool) by index: "T<n> F<units/min>"
  *
+ * ***************************
+ * 2LabsToGo Humidity Control
+ * M1100 - Turn on the drying box fan
  */
 
 #include "../inc/MarlinConfig.h"
@@ -992,6 +995,10 @@ private:
   #endif
 
   static void T(const uint8_t tool_index);
+
+  static void M1100();
+
+  static void M1200();
 
 };
 
