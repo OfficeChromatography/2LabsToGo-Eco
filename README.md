@@ -1,6 +1,6 @@
 # 2LabsToGo-Eco
 
-## 2LabsToGo-Eco combines an analytical (high-performance thin layer chromatography) and a biological (bioassays) laboratory.
+## 2LabsToGo-Eco combines an analytical (high-performance thin-layer chromatography) and a biological (bioassays) laboratory.
 
 <u>Reference:</u>  M.C.O. Romero, K. Jakob, J. Schmidt, T. Nimmerfroh, W. Schwack, G.E.
  Morlock, Consolidating two laboratories into the most sustainable lab of the future: 2LabsToGo-Eco,
