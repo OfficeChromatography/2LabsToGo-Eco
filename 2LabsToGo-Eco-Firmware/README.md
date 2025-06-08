@@ -8,9 +8,8 @@ Marlin 2.0 takes this popular RepRap firmware to the next level by adding suppor
 
 ## Building 2LabsToGo-Eco Firmware
 
-To build the firmware, [PlatformIO](http://docs.platformio.org/en/latest/ide.html#platformio-ide) is preferred. Detailed build and install instructions are posted at:
-
-  - [Installing Marlin (VSCode)](http://marlinfw.org/docs/basics/install_platformio_vscode.html).
+To build the firmware, [PlatformIO](http://docs.platformio.org/en/latest/ide.html#platformio-ide) is preferred. 
+Detailed instructions are also available in Instruction Visual Studio Code.pdf.
 
 For building the firmware open the folder 2LabsToGo-Eco-Marlin in Visual Studio Code.
 The built firmware.hex file is then saved in 2LabsToGo-Eco-Firmware/2LabsToGo-Eco-Marlin/.pio/build/mega2560.
@@ -26,4 +25,4 @@ For more details on flashing, consult the 2LabsToGo-Eco Assembly guide
  
 ## After firmware update
 After a firmware update, both PID tunings must be performed again to safe the settings in the firmware.<br>
-Consult the 2LabsToGo-Eco Assembly guide
+Consult the 2LabsToGo-Eco Assembly guide.
