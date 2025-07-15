@@ -37,7 +37,7 @@ $(".change-graph-size-parameter").on("change", function(){
 })
 
 $(".change-bands-table").on("change", function(){
-    createBandsTable()
+    createBandsTable(getNumberBands())
     calcVol()
 })
 
@@ -69,14 +69,28 @@ $("#id_main_property").on("change",function(){
         $('.change-graph-size-parameter').trigger("change")
     });
 
-function createBandsTable(){
-    gap_size = parseFloat($("#id_gap").val());
-    band_size = parseFloat($("#id_value").val());
-    property = $("#id_main_property").val();
-    number_bands = parseFloat($("#id_value").val());
+function getNumberBands() {
+  const gap_size = parseFloat($("#id_gap").val());
+  const band_size = parseFloat($("#id_value").val());
+  const property = $("#id_main_property").val();
+  const working_area = nBandsWorkingArea();
 
-    working_area = nBandsWorkingArea()
-    if (property=='2'){number_bands = Math.trunc(working_area[0]/(band_size+gap_size))}
+  if (property === '1') {
+      return parseFloat($("#id_value").val()); 
+  } else if (property === '2') {
+      return Math.trunc(working_area[0] / (band_size + gap_size));  
+  }
+  return 0;
+}
+
+function createBandsTable(number_bands = null){
+    // gap_size = parseFloat($("#id_gap").val());
+    // band_size = parseFloat($("#id_value").val());
+    // property = $("#id_main_property").val();
+    // number_bands = parseFloat($("#id_value").val());
+
+    // working_area = nBandsWorkingArea()
+    // if (property=='2'){number_bands = Math.trunc(working_area[0]/(band_size+gap_size))}
     newComponentsTable(number_bands);
 }
 // MAIN
@@ -89,7 +103,8 @@ function mainCalculations(){
     let offset_bottom_size = parseFloat($("#id_offset_bottom").val());
 
     let gap_size = parseFloat($("#id_gap").val());
-    let number_bands = parseFloat($("#id_value").val());
+    //let number_bands = parseFloat($("#id_value").val());
+    const number_bands = getNumberBands();
     let band_size = parseFloat($("#id_value").val());
 
     let band_height = parseFloat($("#id_height").val());
@@ -122,8 +137,9 @@ function mainCalculations(){
       break;
     // Length
     case '2':
-      number_bands = Math.trunc(working_area[0]/(band_size+gap_size))
+      //number_bands = Math.trunc(working_area[0]/(band_size+gap_size))
       if(areErrors('#id_space_error',number_bands<1)){return}
+      createBandsTable(number_bands);
       break;
   }
 
@@ -240,7 +256,9 @@ var calcVol = function calcVol(){
 
 
 $(document).ready(function() {
-  createBandsTable()
+  //createBandsTable()
+  const defaultValue = parseFloat($("#id_value").val());
+  createBandsTable(defaultValue);
   calcVol()
   list_of_saved.loadList()
 });
