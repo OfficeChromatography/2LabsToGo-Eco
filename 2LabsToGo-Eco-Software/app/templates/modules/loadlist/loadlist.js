@@ -166,6 +166,11 @@ class listOfSaved{
             $("#list-load").find("a.active").removeClass("active")
             $('#new_filename').val("")
             $('#selected-element-id').val("")
+             if (window.table){
+                table.destructor();
+                const filas = parseInt($("#id_value").val()) || 0;
+                window.newComponentsTable(filas);
+             }
         }
     )
     }

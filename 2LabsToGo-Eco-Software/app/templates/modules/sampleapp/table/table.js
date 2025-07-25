@@ -45,6 +45,22 @@ class Table {
         }
     }
 
+    addEmptyRows(n = 1){
+            for (let i = 0; i < n; i++){
+                const newRow = this.#addRow();
+                newRow.setBandNumber(this.numberOfRows);   
+            }
+        }
+
+        
+    removeRowsFromEnd(n = 1){
+        for (let i = 0; i < n; i++){
+            const last = this.row.pop();
+            if (last){ last.eliminate(); }
+            this.numberOfRows = this.row.length;
+        }
+    }
+
     getRowByNumber(numberOfRow) {
         /**
          * Returns the row object selected by number of row
@@ -79,21 +95,33 @@ class Table {
       }
       
 
-    loadTable(data) {
-        if (data.length > this.numberOfRows) {
-            this.#addMultipleRows(data.length - this.numberOfRows);
-        } else if (data.length < this.numberOfRows) {
-            this.destructor();
-            this.#addMultipleRows(data.length);
-        }
-        data.forEach((rowData, index) => {
-            if (this.row[index]) {
-                this.row[index].loadDataInRow(rowData);
-            } else {
-                console.warn(`No row found for index ${index}`);
-            }
-        });  
+    // loadTable(data) {
+    //     if (data.length > this.numberOfRows) {
+    //         this.#addMultipleRows(data.length - this.numberOfRows);
+    //     } else if (data.length < this.numberOfRows) {
+    //         this.destructor();
+    //         this.#addMultipleRows(data.length);
+    //     }
+    //     data.forEach((rowData, index) => {
+    //         if (this.row[index]) {
+    //             this.row[index].loadDataInRow(rowData);
+    //         } else {
+    //             console.warn(`No row found for index ${index}`);
+    //         }
+    //     });  
         
+    // }
+    
+    loadTable(data){
+    if (data.length > this.numberOfRows) {
+        this.addEmptyRows(data.length - this.numberOfRows);
+    } else if (data.length < this.numberOfRows) {
+        this.removeRowsFromEnd(this.numberOfRows - data.length);
+    }
+
+    data.forEach((rowData, idx) => {
+        if (this.row[idx]) { this.row[idx].loadDataInRow(rowData); }
+    });
     }
 
     estim_time(data) {

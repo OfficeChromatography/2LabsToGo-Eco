@@ -44,7 +44,8 @@ $(".change-graph-size-parameter").on("change", function(){
 
 $(".change-bands-table").on("change", function(){
     //createBandsTable()
-    createBandsTable(getNumberBands());
+   // createBandsTable(getNumberBands());
+    newComponentsTable(getNumberBands());
     calcVol()
 })
 
@@ -79,7 +80,8 @@ function handlePropertyChange() {
           break;
   }
   //createBandsTable();
-  createBandsTable(getNumberBands());
+  //createBandsTable(getNumberBands());
+  newComponentsTable(getNumberBands());
   $('.change-graph-size-parameter').trigger("change");
 }
 
@@ -90,9 +92,9 @@ function getNumberBands() {
   const working_area = nBandsWorkingArea();
 
   if (property === '1') {
-      return parseFloat($("#id_value").val());  // directamente la cantidad de bandas
+      return parseFloat($("#id_value").val());  
   } else if (property === '2') {
-      return Math.trunc(working_area[0] / (band_size + gap_size));  // calcularla
+      return Math.trunc(working_area[0] / (band_size + gap_size)); 
   }
   return 0;
 }
@@ -158,7 +160,8 @@ function mainCalculations(){
     case '2':
       //number_bands = Math.trunc(working_area[0]/(band_size+gap_size))
       if(areErrors('#id_space_error',number_bands<1)){return}
-      createBandsTable(number_bands);
+      //createBandsTable(number_bands);
+      newComponentsTable(number_bands);
       break;
   }
 
@@ -236,9 +239,19 @@ function totalBandsLength(working_area,sum_gaps_size,number_bands){
 }
 
 // Create a new Table with a given number of rows
-function newComponentsTable(number_row){
-    table.destructor()
-    table = new Table(number_row, calcVol);
+// function newComponentsTable(number_row){
+//     table.destructor()
+//     table = new Table(number_row, calcVol);
+// }
+function newComponentsTable(desiredRows){
+    const diff = desiredRows - table.numberOfRows;
+
+    if (diff > 0){                  
+        table.addEmptyRows(diff);
+    } else if (diff < 0){           
+        table.removeRowsFromEnd(-diff);
+    }
+    
 }
 
 // Change the Graph sizes with the size x and y field values.
