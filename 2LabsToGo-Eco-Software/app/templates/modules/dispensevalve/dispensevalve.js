@@ -13,9 +13,13 @@ function sendToMachine(value){
   }
 
 $('#openvalve').on('click',function(){
-  sendToMachine('G0X1')         //waste bottle
+  sendToMachine('G0X1');         //waste bottle
+  sendToMachine('M400');
   sendToMachine('M42P36S255');  //activate 3way-valve 
-  sendToMachine('G41'); //open dispensing valve
-  sendToMachine('G4S30');    //wait 30 s
-  sendToMachine('M42P36S0');  //deactivate 3way-valve 
+  sendToMachine('M400');
+  sendToMachine('G41'); 		//open dispensing valve
+  sendToMachine('M400');
+  sendToMachine('G4S30');    	//wait 30 s
+  sendToMachine('M400');
+  sendToMachine('M42P36S0');  	//deactivate 3way-valve 
 })
