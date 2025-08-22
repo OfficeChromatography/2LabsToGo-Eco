@@ -39,8 +39,38 @@ The following instructions assume that the folder 2LabsToGo-Eco is located in th
 * After downloading all files, go the installation folder in the Raspberry Pi file manager and rename the concerned files by adding “.old”, for example, “sample.html.old”. In case of problems, it is possible to return to the old files.
 * Using the mouse (left click), move the downloaded files, file by file, to the respective installation folders.
 
+4. Updates concern gcodegenerator.py and/or detections.js
+If the update concerns the file gcodegenerator.py, copy the data INIT_POINT_X and INIT_POINT_Y and the vial positions from the old software (back-up) to the new software.
+If the update concerns the file detection.js, copy the photo position from the old software (back-up) to the new software.
 
+4.1 INIT_POINT_X, INIT_POINT_Y points, and vial positions
+To correct INIT_POINT_X and INIT_POINT_Y and the vial positions, open the file
+	2LabsToGo-Software/app/finecontrol/gcode/GcodeGenerator.py
+with Geany, overwrite the below listed values by the values of the back-up file and save the file.
 
+	INIT_POINT_X = 20
+	INIT_POINT_Y = 3.5
+
+	class GcodeGenerator:
+		# set these values according to each machine!!!
+		pos_common= "G0Z"
+		vial_9= "145" #rinse bottle
+		vial_8= "267.5" #vial 8
+		vial_7= "253.5" #vial 7
+		vial_6= "239.5" #vial 6
+		vial_5= "225.5" #vial 5
+		vial_4= "211.5" #vial 4
+		vial_3= "197.5" #vial 3
+		vial_2= "183.5" #vial 2
+		vial_1= "169.5" #vial 1
+		rin_bot= "145" #rinse bottle
+
+4.2 Photo position 
+To correct the photo position, open the file
+	2LabsToGo-Software/app/templates/js/oclab/detection.js
+with Geany and overwrite the Y value by the value of the back-up file and save the file.
+
+	gcode = 'G1X90\nG28YZ\nG1Y158Z270F3000' //Y value depends on each system
 
 
 
