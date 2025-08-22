@@ -1,0 +1,27 @@
+Update history
+
+Date: 05-10-2025
+Done: General software update
+Concerned: many files
+
+Date: 06-03-2025
+Done: Update for humidity-control
+Concerned: 
+2LabsToGo-Eco-Hardware/3D-parts (openSCAD, STL), 
+2LabsToGo-Eco-Hardware/Materials-Lists (Bill of Materials_humidity-control, additional baskets),
+2LabsToGo-Eco-Firmware (Marlin, firmware hex file)
+
+Date: 07-25-2025
+Done: Sample tables updated (application pattern changes without erasing the sample table)
+Concerned:
+2LabsToGo-Eco-Software/app/templates/js/oclab/sample.js
+2LabsToGo-Eco-Software/app/templates/js/oclab/samplesp.js
+2LabsToGo-Eco-Software/app/templates/modules/loadlist/loadlist.js
+2LabsToGo-Eco-Software/app/templates/modules/sampleapp/table/table.js
+2LabsToGo-Eco-Software/app/templates/modules/sampleappsp/tablesp/tablesp.js
+
+Date: 08-22-2025
+Done: Method Finecontrol/Dispensing valve corrected
+Concerned:
+2LabsToGo-Eco-Software/app/templates/modules/dispensevalve/dispensevalve.js
+

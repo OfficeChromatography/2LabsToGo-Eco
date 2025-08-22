@@ -1,0 +1,47 @@
+Update instructions
+
+1. Firmware update
+Follow the instructions under 2LabsToGo-Eco-Firmware/ReadMe
+
+2. Software update
+The following instructions assume that the folder 2LabsToGo-Eco is located in the home directory.
+
+2.1. Perform a back-up of the software folder!
+
+2.2. Update procedure
+* Disconnect the board (“Connection” tab in browser) and close all tabs.
+* Stop the server with “Ctrl+c” in the running terminal.
+* In the terminal, change to the 2LabsToGo-Eco directory
+	cd ~/2LabsToGo-Eco
+[The following commands require internet connection!]
+* Then type
+	git config pull.rebase false
+  followed by
+	git pull
+=> All changes in the GitHub repository will be merged with the local installation.
+
+2.3 Start the software
+* In the terminal, change to the software directory
+	cd ~/2LabsToGo-Eco/2LabsToG-Eco-Software
+  followed by 
+    python3 run.py (or use the defined alias)
+
+2.4 Open the browser and delete the cache to prevent loading old javascripts.
+* Open the browser’s menu and click on “Settings”.
+* Search for “cache” and select ”Delete browsing data”.
+* Select “All time” and “Cached images and files”.
+* Click “Delete data”.
+
+2.5 In a new browser tab, open the software (address: 127.0.0.1:8000).
+
+3. Alternative partial update (concerned a few files)
+* In the GitHub repository, open the concerned files and click the download buttom.
+* After downloading all files, go the installation folder in the Raspberry Pi file manager and rename the concerned files by adding “.old”, for example, “sample.html.old”. In case of problems, it is possible to return to the old files.
+* Using the mouse (left click), move the downloaded files, file by file, to the respective installation folders.
+
+
+
+
+
+
+
