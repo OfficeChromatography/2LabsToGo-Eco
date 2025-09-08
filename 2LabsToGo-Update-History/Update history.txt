@@ -25,3 +25,14 @@ Done: Method Finecontrol/Dispensing valve corrected
 Concerned:
 2LabsToGo-Eco-Software/app/templates/modules/dispensevalve/dispensevalve.js
 
+Date: 09-08-2025
+Done: Electronic box modified for humidity Control; two-parted frame added to support the old model
+Concerned:
+2LabsToGo-Eco-Hardware/3D-Parts/Autodesk Fusion/electronic box.3fd
+2LabsToGo-Eco-Hardware/3D-Parts/STL/electronic-box/electronic_box.stl
+2LabsToGo-Eco-Hardware/3D-Parts/STL/electronic-box/electronic_box_frame-part1.stl
+2LabsToGo-Eco-Hardware/3D-Parts/STL/electronic-box/electronic_box_frame-part2.stl
+
+
+
+
