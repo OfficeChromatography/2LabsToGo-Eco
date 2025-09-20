@@ -33,6 +33,11 @@ Concerned:
 2LabsToGo-Eco-Hardware/3D-Parts/STL/electronic-box/electronic_box_frame-part1.stl
 2LabsToGo-Eco-Hardware/3D-Parts/STL/electronic-box/electronic_box_frame-part2.stl
 
+Date: 09-20-2025
+Done: README in main updated
+
+
+
 
 
 
