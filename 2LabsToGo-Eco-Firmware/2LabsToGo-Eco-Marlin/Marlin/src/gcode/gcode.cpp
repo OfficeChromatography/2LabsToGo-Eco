@@ -877,11 +877,11 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 7219: M7219(); break;                                // M7219: Set LEDs, columns, and rows
       #endif
 
-      #if ENABLED(HUMIDITY_CONTROL_GCODE)
+      #if ENABLED(HUMIDITY_CONTROL_GCODE_DOWN)
         case 1100: M1100(); break;
       #endif
 
-      #if ENABLED(HUMIDITY_CONTROL_GCODE)
+      #if ENABLED(HUMIDITY_CONTROL_GCODE_UP)
         case 1200: M1200(); break;
       #endif
        

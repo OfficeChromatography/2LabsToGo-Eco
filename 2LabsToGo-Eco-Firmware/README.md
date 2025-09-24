@@ -21,8 +21,8 @@ To flash the firmware from the Raspberry Pi onto the Arduino chip of the 2LabsTo
 use the bash script <b>flash_firmware.sh</b>.
 
 For more details on flashing, consult the 2LabsToGo-Eco Assembly guide 
-(see reference in this [README](https://github.com/OfficeChromatography/2LabsToGo-Eco/blob/main/README.md)).
+(see reference 1 in this [README](https://github.com/OfficeChromatography/2LabsToGo-Eco/blob/main/README.md)).
  
 ## After firmware update
-After a firmware update, both PID tunings must be performed again to safe the settings in the firmware.<br>
-Consult the 2LabsToGo-Eco Assembly guide.
+<b>After a firmware update, both PID tunings must be performed again to safe the settings in the firmware.<br>
+Consult the 2LabsToGo-Eco Assembly guide.</b>

@@ -6,6 +6,6 @@
 
 
 void check_humidity_and_toggle_fan();
-void periodic_humidity_check_down();
+void periodic_humidity_check_up();
 
 

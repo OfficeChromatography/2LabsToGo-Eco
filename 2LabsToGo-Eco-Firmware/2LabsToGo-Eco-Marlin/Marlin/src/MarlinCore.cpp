@@ -48,6 +48,7 @@
 #include "module/stepper/indirection.h"
 
 #include "src/gcode/control/M1100.h"
+#include "src/gcode/control/M1200.h"
 
 #ifdef ARDUINO
   #include <pins_arduino.h>
@@ -1240,15 +1241,20 @@ void setup() {
  *    as long as idle() or manage_inactivity() are being called.
  */
 
-bool is_dryingH_active = false;
+bool is_dryingH_active_down = false;
+bool is_dryingH_active_up = false;
 
 void loop() {
   do {
     idle();
-    if (is_dryingH_active){
-      periodic_humidity_check();
+    if (is_dryingH_active_down){
+      periodic_humidity_check_down();
     }
-    
+
+    if (is_dryingH_active_up){
+      periodic_humidity_check_up();
+    }
+
     #if ENABLED(SDSUPPORT)
       card.checkautostart();
       if (card.flag.abort_sd_printing) abortSDPrinting();

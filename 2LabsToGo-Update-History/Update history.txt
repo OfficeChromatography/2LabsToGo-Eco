@@ -37,6 +37,13 @@ Date: 09-20-2025
 Done: README in main updated
 Done: Instruction Visual Studio Code corrected
 
+Date: 09-22-205
+Done: Humidity Control updated (Firmware and Software), now allowing both drying and humidifying the 2LabsToGo-Eco before development.
+Concerned:
+2LabsToGo-Eco-Firmware (Marlin; firmware_2LabsToGo-Eco.hex)
+2LabsToGo-Eco-Software/app/templates/modules/humiditycontrol/humiditycontrol.html
+2LabsToGo-Eco-Software/app/templates/modules/humiditycontrol/humiditycontrol.js
+
 
 
 

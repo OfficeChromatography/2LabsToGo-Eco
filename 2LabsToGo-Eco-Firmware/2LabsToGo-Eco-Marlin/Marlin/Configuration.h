@@ -37,7 +37,8 @@
  *
  */
 #define CONFIGURATION_H_VERSION 020005
-#define HUMIDITY_CONTROL_GCODE  //turn on drying box fan
+#define HUMIDITY_CONTROL_GCODE_DOWN  //turn on drying box fan for drying
+#define HUMIDITY_CONTROL_GCODE_UP  //turn on drying box fan for humidifyling
 
 
 //===========================================================================
@@ -460,7 +461,7 @@
 #define HEATER_5_MAXTEMP 275
 #define HEATER_6_MAXTEMP 275
 #define HEATER_7_MAXTEMP 275
-#define BED_MAXTEMP      140
+#define BED_MAXTEMP      130
 
 //===========================================================================
 //============================= PID Settings ================================

@@ -139,5 +139,6 @@ extern const char NUL_STR[], M112_KILL_STR[], G28_STR[], M21_STR[], M23_STR[], M
 void pumpit();
 float get_pressure(uint16_t period);
 
-extern bool is_dryingH_active;
+extern bool is_dryingH_active_down;
+extern bool is_dryingH_active_up;
 extern int threshold;
