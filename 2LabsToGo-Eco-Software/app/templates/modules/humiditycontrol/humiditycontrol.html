@@ -1,32 +1,69 @@
 {% load static %}
 <div class="container">
   <div class="d-flex justify-content-between py-2">
-    <p class="text-center  m-0">Threshold</p>
-    <input class="custom-range mx-2" name="thresholdrange" value='20' type="range" min="10" max="80" step="1" id='thresholdrange'/>
-    <input type="number" class='form-control' value="20" id='thresholdtext' min="10" max="80" style="width: 5em"/>
+    <p class="text-center  m-0">Drying Threshold</p>
+    <input class="custom-range mx-2" name="thresholdrange" value='20' type="range" min="10" max="100" step="1" id='thresholdrangedown'/>
+    <input type="number" class='form-control' value="20" id='thresholdtextdown' min="10" max="100" style="width: 5em"/>
   </div>
   <br>
    <div class="float-right">
-  <button class="btn btn-secondary btn-icon-split btn-sm" id='thresholdcontrol'>
+  <button class="btn btn-secondary btn-icon-split btn-sm" id='thresholdcontroldown'>
     <span class="icon text-white-50">
       <i class="fas fa-forward"></i>
     </span>
-    <span class="text">Set Threshold</span>
+    <span class="text">Set Drying Threshold</span>
   </button>
 </div>
 </div>
 <div class="float-left">
-    <button class="btn btn-success btn-icon-split btn-sm" id='checkon'>
+    <button class="btn btn-success btn-icon-split btn-sm" id='checkondown'>
       <span class="icon text-white-50">
         <i class="fas fa-lightbulb"></i>
       </span>
       <span class="text">Start</span>
     </button>
-    <button class="btn btn-danger btn-icon-split btn-sm" id='checkoff' disabled>
+    <button class="btn btn-danger btn-icon-split btn-sm" id='checkoffdown' disabled>
       <span class="icon text-white-50">
         <i class="fas fa-lightbulb"></i>
       </span>
       <span class="text">Stop</span>
     </button>
 </div>
+
+<br>
+<br>
+
+<div class="container">
+  <div class="d-flex justify-content-between py-2">
+    <p class="text-center  m-0">Humidifying Threshold</p>
+    <input class="custom-range mx-2" name="thresholdrange" value='80' type="range" min="10" max="100" step="1" id='thresholdrangeup'/>
+    <input type="number" class='form-control' value="80" id='thresholdtextup' min="10" max="100" style="width: 5em"/>
+  </div>
+  <br>
+   <div class="float-right">
+  <button class="btn btn-secondary btn-icon-split btn-sm" id='thresholdcontrolup'>
+    <span class="icon text-white-50">
+      <i class="fas fa-forward"></i>
+    </span>
+    <span class="text">Set Humidifying Threshold</span>
+  </button>
+</div>
+</div>
+<div class="float-left">
+    <button class="btn btn-success btn-icon-split btn-sm" id='checkonup'>
+      <span class="icon text-white-50">
+        <i class="fas fa-lightbulb"></i>
+      </span>
+      <span class="text">Start</span>
+    </button>
+    <button class="btn btn-danger btn-icon-split btn-sm" id='checkoffup' disabled>
+      <span class="icon text-white-50">
+        <i class="fas fa-lightbulb"></i>
+      </span>
+      <span class="text">Stop</span>
+    </button>
+</div>
+
+
+
 <script src="{% static 'modules/humiditycontrol/humiditycontrol.js' %}"></script>

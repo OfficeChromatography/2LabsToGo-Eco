@@ -1,17 +1,23 @@
-var isCheckOn = false; 
+var isCheckOnUp = false; 
+var isCheckOnDown = false; 
 
 
 // Check the state of the sensor when the page loads
 $(document).ready(function() {
-    if (localStorage.getItem('isCheckOn') === 'true') {
-        isCheckOn = true;
-    } else {
-        isCheckOn = false;
-    }
-
+//    if (localStorage.getItem('isCheckOnUp') === 'true') {
+//        isCheckOnUp = true;
+//    } else {
+//        isCheckOnUp = false = false;
+//    }
+//});
+    
+//$(document).ready(function() {
+//    if (localStorage.getItem('isCheckOnDown') === 'true') {
+//        isCheckOnDown = true;
+//    } else {
+//        isCheckOnDown = false;
+//    }
     updateButtonStates();
-    
-    
 }); 
 
 function sendToMachine(value){
@@ -29,49 +35,88 @@ function sendToMachine(value){
   
   
 function updateButtonStates() {
-  $('#checkon').attr('disabled', isCheckOn);
-  $('#checkoff').attr('disabled', !isCheckOn);
+  $('#checkondown').attr('disabled', isCheckOnDown);
+  $('#checkoffdown').attr('disabled', !isCheckOnDown);
+  $('#checkonup').attr('disabled', isCheckOnUp);
+  $('#checkoffup').attr('disabled', !isCheckOnUp);
   
-  const savedThreshold = localStorage.getItem('threshold');
-    if (savedThreshold !== null) {
-        $('#thresholdtext').val(savedThreshold); 
-        $('#thresholdrange').val(savedThreshold);  
+  const savedThresholdDown = localStorage.getItem('thresholddown');
+    if (savedThresholdDown !== null) {
+        $('#thresholdtextdown').val(savedThresholdDown); 
+        $('#thresholdrangedown').val(savedThresholdDown);
+    }
+  const savedThresholdUp = localStorage.getItem('thresholdup');
+    if (savedThresholdUp !== null) {
+        $('#thresholdtextup').val(savedThresholdUp); 
+        $('#thresholdrangeup').val(savedThresholdUp);  		
     }
 }
 
 
-$('#thresholdrange').on('change',function(){
-$('#thresholdtext').val($(this).val())
+$('#thresholdrangedown').on('change',function(){
+$('#thresholdtextdown').val($(this).val())
 })
 
-$('#thresholdtext').on('change',function(){
-$('#thresholdrange').val($(this).val())
+$('#thresholdrangeup').on('change',function(){
+$('#thresholdtextup').val($(this).val())
 })
 
-$('#thresholdcontrol').on('click',function(){
-    gcode = 'M1100 T'+ $('#thresholdtext').val()
+//$('#thresholdtext').on('change',function(){
+//$('#thresholdrange').val($(this).val())
+//})
+
+$('#thresholdcontroldown').on('click',function(){
+    gcode = 'M1100 T'+ $('#thresholdtextdown').val()
     sendToMachine(gcode)
-    localStorage.setItem('threshold', $('#thresholdtext').val());
+    localStorage.setItem('thresholddown', $('#thresholdtextdown').val());
 })
 
-$('#checkon').on('click', function() {
-    if (!isCheckOn) {
+$('#thresholdcontrolup').on('click',function(){
+    gcode = 'M1200 T'+ $('#thresholdtextup').val()
+    sendToMachine(gcode)
+    localStorage.setItem('thresholdup', $('#thresholdtextup').val());
+})
+
+$('#checkondown').on('click', function() {
+    if (!isCheckOnDown) {
       var gcode = 'M1100 A1'; 
       sendToMachine(gcode);
-      isCheckOn = true;
-      localStorage.setItem('isCheckOn', 'true'); 
-      $('#checkon').attr('disabled', true);
-      $('#checkoff').attr('disabled', false);
+      isCheckOnDown = true;
+      localStorage.setItem('isCheckOnDown', 'true'); 
+      $('#checkondown').attr('disabled', true);
+      $('#checkoffdown').attr('disabled', false);
     }
   });
 
-  $('#checkoff').on('click', function() {
-    if (isCheckOn) {
+  $('#checkoffdown').on('click', function() {
+    if (isCheckOnDown) {
       var gcode = 'M1100 A0'; 
       sendToMachine(gcode);
-      isCheckOn = false;
-      localStorage.setItem('isCheckOn', 'false'); 
-      $('#checkon').attr('disabled', false);
-      $('#checkoff').attr('disabled', true);
+      isCheckOnDown = false;
+      localStorage.setItem('isCheckOnDown', 'false'); 
+      $('#checkondown').attr('disabled', false);
+      $('#checkoffdown').attr('disabled', true);
+    }
+  });
+  
+  $('#checkonup').on('click', function() {
+    if (!isCheckOnUp) {
+      var gcode = 'M1200 A1'; 
+      sendToMachine(gcode);
+      isCheckOnUp = true;
+      localStorage.setItem('isCheckOnUp', 'true'); 
+      $('#checkonup').attr('disabled', true);
+      $('#checkoffup').attr('disabled', false);
+    }
+  });
+
+  $('#checkoffup').on('click', function() {
+    if (isCheckOnUp) {
+      var gcode = 'M1200 A0'; 
+      sendToMachine(gcode);
+      isCheckOnUp = false;
+      localStorage.setItem('isCheckOnUp', 'false'); 
+      $('#checkonup').attr('disabled', false);
+      $('#checkoffup').attr('disabled', true);
     }
   });
