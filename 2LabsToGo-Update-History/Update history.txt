@@ -44,6 +44,9 @@ Concerned:
 2LabsToGo-Eco-Software/app/templates/modules/humiditycontrol/humiditycontrol.html
 2LabsToGo-Eco-Software/app/templates/modules/humiditycontrol/humiditycontrol.js
 
+Date: 10-13-2025
+Done: README in main updated
+Concerned: Raspberry Pi operating system "bullseye" 
 
 
 
