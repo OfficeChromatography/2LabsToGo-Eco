@@ -3,12 +3,10 @@
 ## 2LabsToGo-Eco combines an analytical (high-performance thin-layer chromatography) and a biological (bioassays) laboratory.
 
 <u>References:</u>  
-<a>1. M.C.O. Romero, K. Jakob, J. Schmidt, T. Nimmerfroh, W. Schwack, G.E.
+M.C.O. Romero, K. Jakob, J. Schmidt, T. Nimmerfroh, W. Schwack, G.E.
  Morlock, Consolidating two laboratories into the most sustainable lab of the future: 2LabsToGo-Eco,
- Analytica Chimica Acta (2025) 1367, 344103,  https://doi.org/10.1016/j.aca.2025.344103
-
-<a> 2. A. Haase, W. Schwack, G. Morlock, Humidity control for the 2LabsToGo-Eco, Analytica Chimica Acta (2025), in press
-
+ Analytica Chimica Acta (2025) 1367, 344103, (https://doi.org/10.1016/j.aca.2025.344103).<br><br>A. Haase, W. Schwack, G. Morlock, Humidity control for the 2LabsToGo-Eco, 
+Analytica Chimica Acta (2025), 344811, <br>(https://doi.org/10.1016/j.aca.2025.344811).
 
 This repository contains the folders for the hardware, firmware, and software for 2LabsToGo-Eco.
 For details and instructions consult the given references.
