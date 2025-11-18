@@ -48,7 +48,9 @@ Date: 10-13-2025
 Done: README in main updated
 Concerned: Raspberry Pi operating system "bullseye" 
 
-
+Date: 11-18-2025
+Done: Some files have been cleaned up.
+Concerned: migrations, update is not required
 
 
 

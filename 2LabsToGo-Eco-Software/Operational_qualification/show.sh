@@ -20,7 +20,7 @@ read answer
      then
 	 echo ""
 	 echo "The show was stopped by the user."  #script completely ends!
-	 aplay --quiet EchoBells.wav
+	 aplay --quiet BusinessEcho.wav
 	 exit -1
    fi
 echo ""
