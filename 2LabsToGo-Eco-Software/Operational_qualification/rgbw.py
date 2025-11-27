@@ -1,19 +1,20 @@
 #!/usr/bin/env python3
-#rgbw.py
+# rgbw.py
 
 import serial
 import time
 
-def command(ser, command):
-  ser.write(str.encode(command)) 
-  time.sleep(1)
-  
 
-ser = serial.Serial('/dev/ttyAMA1', 115200)
+def command(ser, command):
+    ser.write(str.encode(command))
+    time.sleep(1)
+
+
+ser = serial.Serial("/dev/ttyAMA3", 115200)
 time.sleep(2)
 
 
-#LEDs on and off
+# LEDs on and off
 command(ser, "G93R50B0G0W0\r\n")
 time.sleep(1)
 command(ser, "G93R100B0G0W0\r\n")

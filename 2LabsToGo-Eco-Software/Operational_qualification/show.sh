@@ -2,7 +2,7 @@
 #Needle motor must be completly up!!
 #show.sh
 
-yes | sudo chmod 666 /dev/ttyAMA1
+yes | sudo chmod 666 /dev/ttyAMA3
 #yes | sudo chmod +x *.py
 
 aplay --quiet BusinessEcho.wav

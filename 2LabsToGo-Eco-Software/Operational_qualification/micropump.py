@@ -11,7 +11,7 @@ def command(ser, command):
   ser.write(str.encode(command)) 
   time.sleep(1)
 
-ser = serial.Serial('/dev/ttyAMA1', 115200)
+ser = serial.Serial('/dev/ttyAMA3', 115200)
 time.sleep(1)
 
 #Marlin settings for autosampler
