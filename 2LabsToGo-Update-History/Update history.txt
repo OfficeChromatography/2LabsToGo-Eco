@@ -52,5 +52,7 @@ Date: 11-18-2025
 Done: Some files have been cleaned up.
 Concerned: migrations, update is not required
 
-
+Date: 12-02-2025
+Done:  Java scripts updated, now better working
+Concerned: drypump.js, dispensvalve.js, wayvalve.js 
 

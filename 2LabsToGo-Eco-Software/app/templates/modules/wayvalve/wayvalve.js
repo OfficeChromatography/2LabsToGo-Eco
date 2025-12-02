@@ -1,32 +1,63 @@
-$("#valvecontrol").on('click',function(e){
+$("#valvecontrol").on('click', function(e) {
     e.preventDefault();
     console.log($("#wayvalveControlForm").serialize());
+    sendToValveControl();
+});
+
+function sendToValveControl() {
     $.ajax({
-    method: 'POST',
-    url:    window.location.origin+'/wayvalve/',
-    data:   $("#wayvalveControlForm").serialize(),
-    success: staticCleanMethodSuccess,
-    error: staticCleanMethodError,
-    })
-    function staticCleanMethodSuccess(data, textStatus, jqXHR){
+        method: 'POST',
+        url: window.location.origin + '/wayvalve/',
+        data: $("#wayvalveControlForm").serialize(),
+        success: function(data, textStatus, jqXHR) {
+            console.log("Success!");
+            controlValve();
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log(errorThrown);
+        }
+    });
+}
+
+async function controlValve() {
+    const cycles = parseInt($('#valveCycles').val(), 10);
+    for (let i = 0; i < cycles; i++) {
+        try {
+            await sendToMachine('M42P36S255'); // Ventil aktivieren
+            await sendToMachine('G4S1');     // 1 Sekunde warten
+            await sendToMachine('M42P36S0');   // Ventil deaktivieren
+            await sendToMachine('G4S1');     // 1 Sekunde warten
+        } catch (error) {
+            console.error('Error in controlValve:', error);
+        }
     }
-    function staticCleanMethodError(jqXHR, textStatus, errorThrown){}
-})
+}
 
-$('#valveRange').on('change',function(){
-  $('#valveCycles').val($(this).val())
-})
-$('#valveCycles').on('change',function(){
-  $('#valveRange').val($(this).val())
-})
+$('#valveRange').on('change', function() {
+    $('#valveCycles').val($(this).val());
+});
 
-$('#valvecontrol').on('click',function(){
-  s = $('#valveCycles').val()
-  for (let i = 0; i < s; i++) {
-  sendToMachine('M42P36S255'); //activate valve
-  sendToMachine('G4S1');    //wait 1 s
-  sendToMachine('M42P36S0');   //deactivate valve
-  sendToMachine('G4S1');    //wait 1 s
-  }
-})
+$('#valveCycles').on('change', function() {
+    $('#valveRange').val($(this).val());
+});
 
+// Annahme: Diese Funktion wurde bereits in deinem Code definiert
+async function sendToMachine(value) {
+    var data = {'gcode': value};
+    console.log(data);
+    return new Promise(function(resolve, reject) {
+        $.ajax({
+            method: 'POST',
+            url: window.location.origin + '/send/',
+            data: data,
+            success: function(data, textStatus, jqXHR) {
+                console.log("Success!");
+                resolve(data);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(errorThrown);
+                reject(errorThrown);
+            }
+        });
+    });
+}
