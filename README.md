@@ -24,7 +24,7 @@ but we are working on it.
 
 
 ### 2. Clone the 2LabsToGo-Eco repository
-The simplest way to clone a git repository is opening a terminal, then go to the directory where you would like to have the 2LabsToGo-Eco folder.
+The simplest way to clone a git repository (internet access required!) is opening a terminal, then go to the directory where you would like to have the 2LabsToGo-Eco folder.
 
 E.g.
 ```bash

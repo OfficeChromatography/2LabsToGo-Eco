@@ -7,6 +7,8 @@ The installation process is really simple.
 As operation system, Raspberry Pi OS (Legacy, 64-bit, Debian Bullseye) is recommended,
 installed by the [Raspberry Pi Imager](https://www.raspberrypi.com/software/).
 
+Before the next steps, consult the [checklist](https://github.com/OfficeChromatography/2LabsToGo-Eco/blob/main/2LabsToGo-Update-History/checklist.pdf).
+
 To clone the 2LabsToGo-Eco repository, consult this [README](https://github.com/OfficeChromatography/2LabsToGo-Eco/blob/main/README.md).
 
 ### Execute 'install.py'
@@ -17,7 +19,7 @@ cd /path/to/your/2LabsToGo-Eco-Software
 ```
 Then execute
 ```bash
-python3 install.py |& tee install-py.log
+sudo python3 install.py |& tee install-py.log
 ```
 
 This will install:
@@ -29,7 +31,7 @@ After some minutes, 2LabsToGo-Eco-Software is installed in your device.
 
 To start the server execute the run.py file with
 ```
-python3 run.py |& tee run-py.log
+sudo python3 run.py |& tee run-py.log
 ```
 The log files can be consulted in case of any problem.<a>
 
