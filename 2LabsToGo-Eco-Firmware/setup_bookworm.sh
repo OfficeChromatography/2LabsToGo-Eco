@@ -8,7 +8,7 @@ set -e
 echo "=== 2LabsToGo-Eco Firmware Setup for Bookworm ==="
 
 # Check if running as root
-if [ "$EUID" -ne 0 ]; then 
+if [ "$EUID" -ne 0 ]; then
     echo "Please run as root: sudo bash setup_bookworm.sh"
     exit 1
 fi
@@ -23,68 +23,79 @@ apt install -y libgpiod2 gpiod libgpiod-dev
 
 # Check if avrdude supports linuxgpiod
 echo "Checking avrdude version and linuxgpiod support..."
-if command -v avrdude &> /dev/null && avrdude -c ? 2>&1 | grep -q "linuxgpiod"; then
+if command -v avrdude &> /dev/null && avrdude -c ? 2>&1 | grep -q "linuxgpio"; then
     echo "✓ avrdude with linuxgpiod support detected"
 else
     echo "Building avrdude from source with gpiod support..."
-    
+
     # Install build dependencies
     apt install -y build-essential git cmake libelf-dev libusb-dev \
-        libhidapi-dev libftdi1-dev libreadline-dev flex bison libgpiod-dev
-    
+        libhidapi-dev libftdi1-dev libreadline-dev flex bison
+
     # Remove old avrdude if installed
     apt remove -y avrdude || true
-    
+
     echo "Cloning avrdude repository..."
     cd /tmp
     if [ -d "avrdude" ]; then
         rm -rf avrdude
     fi
-    
+
     git clone https://github.com/avrdudes/avrdude.git
     cd avrdude
     git checkout v8.1
-    
+
     echo "Building avrdude..."
     mkdir -p build
     cd build
-    cmake -D CMAKE_BUILD_TYPE=Release -D HAVE_LIBGPIOD=1 ..
-    
+    cmake -D CMAKE_BUILD_TYPE=Release \
+          -D HAVE_LINUXGPIO=1 \
+          -D CMAKE_INSTALL_PREFIX=/usr/local \
+          ..
+
     # Check if cmake found libgpiod
-    if grep -q "HAVE_LIBGPIOD" CMakeCache.txt; then
-        echo "✓ CMake detected libgpiod support"
+    if grep -q "HAVE_LINUXGPIO:BOOL=1" CMakeCache.txt; then
+        echo "✓ CMake detected linuxgpio support"
     else
-        echo "⚠ Warning: CMake may not have detected libgpiod"
+        echo "✗ Error: CMake did not enable linuxgpio support"
+        echo "CMake cache content:"
+        grep -i "gpiod\|gpio" CMakeCache.txt || echo "No GPIO-related entries found"
+        exit 1
     fi
-    
+
     make -j$(nproc)
     make install
 
     # Update library cache
     ldconfig
-    
+
+    # Remove any old avrdude binaries from standard paths
+    rm -f /usr/bin/avrdude
+
     echo "✓ avrdude installed from source"
-    
-    # Verify installation - use full path to ensure we're testing the new installation
+
+    # Verify installation
     echo "Verifying avrdude installation..."
     AVRDUDE_PATH=$(which avrdude)
     echo "Using avrdude at: $AVRDUDE_PATH"
-    
-    if /usr/local/bin/avrdude -c ? 2>&1 | grep -q "linuxgpiod"; then
-        echo "✓ linuxgpiod programmer support confirmed"
+
+    # Test linuxgpio support
+    if /usr/local/bin/avrdude -c ?type 2>&1 | grep -q "linuxgpio"; then
+        echo "✓ linuxgpio programmer support confirmed"
     else
-        echo "⚠ Warning: linuxgpiod support not found in programmer list"
+        echo "✗ Error: linuxgpio support not found"
         echo ""
-        echo "Attempting manual verification..."
-        # Try to see if the library is linked
-        if ldd /usr/local/bin/avrdude | grep -q libgpiod; then
-            echo "✓ avrdude is linked against libgpiod library"
-        else
-            echo "✗ avrdude is NOT linked against libgpiod library"
-            echo "This may indicate a build configuration issue"
-        fi
-        echo ""
-        echo "You can manually check available programmers with: avrdude -c ?"
+        echo "Available programmer types:"
+        /usr/local/bin/avrdude -c ?type 2>&1 | grep -i gpio || echo "No GPIO programmers found"
+        exit 1
+    fi
+
+    # Verify libgpiod linkage
+    if ldd /usr/local/bin/avrdude | grep -q libgpiod; then
+        echo "✓ avrdude is linked against libgpiod library"
+    else
+        echo "✗ Error: avrdude is NOT linked against libgpiod library"
+        exit 1
     fi
 fi
 
