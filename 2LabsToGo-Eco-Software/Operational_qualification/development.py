@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
-#development.py
+# development.py
 
 import serial
 import time
 
-def command(ser, command):
-  ser.write(str.encode(command)) 
-  time.sleep(1)
 
-ser = serial.Serial('/dev/ttyAMA1', 115200)
+def command(ser, command):
+    ser.write(str.encode(command))
+    time.sleep(1)
+
+
+ser = serial.Serial("/dev/ttyAMA3", 115200)
 time.sleep(1)
 
 command(ser, "G28XY\r\n")

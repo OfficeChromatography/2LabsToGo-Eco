@@ -6,7 +6,7 @@
 #   mkdir $fold
 #fi
 
-yes | sudo chmod 666 /dev/ttyAMA1
+yes | sudo chmod 666 /dev/ttyAMA3
 
 #Function IMAGE
 IMAGE()
