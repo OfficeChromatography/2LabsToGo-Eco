@@ -1,6 +1,6 @@
 #version: "3"
 
-services:   
+services:
   redis:
     restart: always
     container_name: oc_redis_cont
@@ -10,24 +10,22 @@ services:
       - '6379:6379'
 
   app:
+    image: ocmanager/ocmanager-eco-django5
     restart: always
     container_name: oc_manager_cont
-    image: ocmanager/ocmanager4:arm64
     depends_on:
       - redis
-    #env_file: oc_manager_v3.env
     environment:
       - UDEV=1
       - DJANGO_SETTINGS_MODULE=app.settings
       - QT_X11_NO_MITSHM=1
-      #- QT_GRAPHICSSYSTEM="native"
       - DISPLAY=$DISPLAY
     ports:
-      - "8000:8000" # Map 8000 to 8000 of our docker image
+      - "8000:8000"
     privileged: true
     volumes:
-      - ./app:/app # Map ./app directory en docker app folder
-      - /dev:/dev # Magic for USB connection to work
+      - ./app:/app
+      - /dev:/dev
       - /run/udev:/run/udev:ro
       - /tmp/.X11-unix:/tmp/.X11-unix
     cap_add:
@@ -36,7 +34,8 @@ services:
       - '/dev:/dev'
     tmpfs:
       - '/dev/shm:exec'
+    working_dir: /app
     command: >
-      sh -c "python manage.py makemigrations &&
-            python manage.py migrate &&
-            python manage.py runserver 0.0.0.0:8000"
+      sh -c "python3 manage.py makemigrations &&
+            python3 manage.py migrate &&
+            python3 manage.py runserver 0.0.0.0:8000"

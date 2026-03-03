@@ -54,5 +54,11 @@ Concerned: migrations, update is not required
 
 Date: 12-02-2025
 Done:  Java scripts updated, now better working
-Concerned: drypump.js, dispensvalve.js, wayvalve.js 
+Concerned: drypump.js, dispensvalve.js, wayvalve.js
+
+Date: 03-03-2026
+Done: Updates to Django 5, Debian 13 (Trixie), and Raspberry Pi 5B
+Concerned: Man files, but not GcodeGenerator.py and detection.js
+
+
 

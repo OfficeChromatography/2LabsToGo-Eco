@@ -18,7 +18,7 @@ The following instructions assume that the folder 2LabsToGo-Eco is located in th
 	git config pull.rebase false
   followed by
 	git pull
-=> All changes in the GitHub repository will be merged with the local installation.
+=> All changes in the GitHub repository will be merged with the local Installation, but locally modified files will be maintained.
 
 2.3 Start the software
 * In the terminal, change to the software directory
@@ -26,7 +26,7 @@ The following instructions assume that the folder 2LabsToGo-Eco is located in th
   followed by 
     python3 run.py (or use the defined alias)
 
-2.4 Open the browser and delete the cache to prevent loading old javascripts.
+2.4 Open the browser and delete the cache to prevent loading old Java scripts.
 * Open the browser’s menu and click on “Settings”.
 * Search for “cache” and select ”Delete browsing data”.
 * Select “All time” and “Cached images and files”.
@@ -34,19 +34,14 @@ The following instructions assume that the folder 2LabsToGo-Eco is located in th
 
 2.5 In a new browser tab, open the software (address: 127.0.0.1:8000).
 
-3. Alternative partial update (concerned a few files)
-* In the GitHub repository, open the concerned files and click the download buttom.
-* After downloading all files, go the installation folder in the Raspberry Pi file manager and rename the concerned files by adding “.old”, for example, “sample.html.old”. In case of problems, it is possible to return to the old files.
-* Using the mouse (left click), move the downloaded files, file by file, to the respective installation folders.
+3. Updates concern gcodegenerator.py and/or detections.js
+If the update concerns the file GcodeGenerator.py, copy the data INIT_POINT_X and INIT_POINT_Y and the vial positions from the old software (back-up) to the updated software.
+If the update concerns the file detection.js, copy the photo position from the old software (back-up) to the updated software.
 
-4. Updates concern gcodegenerator.py and/or detections.js
-If the update concerns the file gcodegenerator.py, copy the data INIT_POINT_X and INIT_POINT_Y and the vial positions from the old software (back-up) to the new software.
-If the update concerns the file detection.js, copy the photo position from the old software (back-up) to the new software.
-
-4.1 INIT_POINT_X, INIT_POINT_Y points, and vial positions
+3.1 INIT_POINT_X, INIT_POINT_Y points, and vial positions
 To correct INIT_POINT_X and INIT_POINT_Y and the vial positions, open the file
 	2LabsToGo-Software/app/finecontrol/gcode/GcodeGenerator.py
-with Geany, overwrite the below listed values by the values of the back-up file and save the file.
+with Geany, overwrite the below exemplarily listed values by the values of the back-up file and save the file.
 
 	INIT_POINT_X = 20
 	INIT_POINT_Y = 3.5
@@ -65,13 +60,40 @@ with Geany, overwrite the below listed values by the values of the back-up file 
 		vial_1= "169.5" #vial 1
 		rin_bot= "145" #rinse bottle
 
-4.2 Photo position 
+3.2 Photo position 
 To correct the photo position, open the file
 	2LabsToGo-Software/app/templates/js/oclab/detection.js
 with Geany and overwrite the Y value by the value of the back-up file and save the file.
 
 	gcode = 'G1X90\nG28YZ\nG1Y158Z270F3000' //Y value depends on each system
 
+4. In case of a complete new 2LabsToGo-Eco Installation (install.py and run.py have been executed), import the old database (methods and images) and the media folder (images, gcode files).
+* Disconnect the board (“Connection” tab in browser) and close all tabs.
+* Stop the server with “Ctrl+c” in the running terminal.
+* Then execute in the terminal 
+	cd app  (change to the directory 2LabsToGo-Eco/2LabsToGoEco-Software/app)
+  followed by the next command
+	python3 db-import.py
+	
+The Python script will rename the newly created and empty database db.sqlite3 to db-new.sqlite3	and rename the media folder to media-new.
+Additionally, the Python script will delete all 0001_initial.py in migrations of sampleapp, finecontrol, development, and detection.
 
+* From the backup, copy the old database (/app/db.sqlite3) and the media folder (/app/media) to the 2LabsToGo-Eco-Software/app folder of the new installation.
 
+Executing python3 run.py will now perform the new migrations and load the old database.
+	cd ..  (go back to the folder 2LabsToGo-Eco-Software)
+	python3 run.py  (or type the created alias)
+
+5. Special upgrade procedure if the database structure was modified
+For this purpose, a Python script (update_db.py) will be available in the app folder, to be executed with 
+	cd 2LabsToGo-Eco/2LabsToGo-Eco-Software/app
+followed by
+	python3 update_db.py
+	
+In Update history.txt, information concerning the changes are given.
+The Python script will modify the database and also will delete all 0001_initial.py in migrations of sampleapp, finecontrol, development, and detection.
+
+Executing python3 run.py will now perform the new migrations and load the modified database.
+	cd ..  (go back to the folder 2LabsToGo-Eco-Software)
+	python3 run.py  (or type the created alias)
 

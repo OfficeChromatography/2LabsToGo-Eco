@@ -9,7 +9,7 @@ Marlin 2.0 takes this popular RepRap firmware to the next level by adding suppor
 ## Building 2LabsToGo-Eco Firmware
 
 To build the firmware, [PlatformIO](http://docs.platformio.org/en/latest/ide.html#platformio-ide) is preferred. 
-Detailed instructions are also available in Instruction Visual Studio Code.pdf.
+Detailed instructions are also available in [Instruction Visual Studio Code](https://github.com/OfficeChromatography/2LabsToGo-Eco/blob/main/2LabsToGo-Eco-Firmware/Instruction%20Visual%20Studio%20Code.pdf).
 
 For building the firmware open the folder 2LabsToGo-Eco-Marlin in Visual Studio Code.
 The built firmware.hex file is then saved in 2LabsToGo-Eco-Firmware/2LabsToGo-Eco-Marlin/.pio/build/mega2560.
@@ -18,11 +18,11 @@ The built firmware.hex file is then saved in 2LabsToGo-Eco-Firmware/2LabsToGo-Ec
 
 A pre-built firmware file (firmware_2LabsToGo-Eco.hex) is available in this folder, including files for setting the fuses and flashing the bootloader.
 To flash the firmware from the Raspberry Pi onto the Arduino chip of the 2LabsToGo-Eco mainboard, 
-use the bash script <b>flash_firmware.sh</b>.
+use the bash script <u>2LabsToGo-Eco-Firmware/Bullseye/flash_firmware_bullseye.sh</u> or 
+<u>2LabsToGo-Eco-Firmware/Trixie/flash_firmware_trixie.sh</u>, depending upon the used Raspberry Pi OS.
 
-For more details on flashing, consult the 2LabsToGo-Eco Assembly guide 
-(see reference 1 in this [README](https://github.com/OfficeChromatography/2LabsToGo-Eco/blob/main/README.md)).
+For more details on flashing, consult the [2LabsToGo-Eco Assembly guide](https://doi.org/10.1016/j.aca.2025.344103) and reference 3 in this [README](https://github.com/OfficeChromatography/2LabsToGo-Eco/blob/main/README.md).
  
 ## After firmware update
-<b>After a firmware update, both PID tunings must be performed again to safe the settings in the firmware.<br>
-Consult the 2LabsToGo-Eco Assembly guide.</b>
+After a firmware update, both PID tunings must be performed again to save the settings in the firmware.<br>
+Consult the [2LabsToGo-Eco Assembly guide](https://doi.org/10.1016/j.aca.2025.344103).

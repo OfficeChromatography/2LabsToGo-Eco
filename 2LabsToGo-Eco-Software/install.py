@@ -33,8 +33,8 @@ class InstallationProcess:
             "curl": ['sudo', 'apt-get', 'install', 'curl', '-y'],
             "docker download": ["sudo", "curl", "-fsSL", "https://get.docker.com", "-o", "get-docker.sh"],
             "docker installation": ["sudo", "sh", "get-docker.sh"],
-            "install_docker_compose": ["sudo", "pip3", "install", "docker-compose"],
             "install_libraries": ["sudo", "apt-get", "install", "-y", "libffi-dev", "libssl-dev"],
+            "install_opencv": ["sudo", "apt-get", "install", "-y", "python3-opencv", "typer"],
             "autoremove": ["sudo", "apt-get", "autoremove", "-y"],
         }
 

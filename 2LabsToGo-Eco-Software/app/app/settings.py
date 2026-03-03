@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['127.0.0.1','192.168.2.109','134.176.158.47','testserver']
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -85,7 +86,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'app.wsgi.application'
+ASGI_APPLICATION = 'app.asgi.application'
 
 
 # Database
@@ -161,7 +162,6 @@ MEDIA_URL = '/media/'
 
 
 # Channels CONFIG
-ASGI_APPLICATION = 'app.routing.application'
 CHANNEL_LAYERS = {
     "default": {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',

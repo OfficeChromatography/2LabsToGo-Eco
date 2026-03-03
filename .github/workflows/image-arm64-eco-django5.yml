@@ -1,0 +1,64 @@
+name: Build ARM64 ECO
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Branch/Tag/SHA to build'
+        required: false
+        default: main
+      image_name:
+        description: 'Docker image name'
+        required: false
+        default: ocmanager/ocmanager-eco
+      context:
+        description: 'Build context (folder)'
+        required: false
+        default: 2LabsToGo-Eco-Software
+      dockerfile:
+        description: 'Path to Dockerfile'
+        required: false
+        default: 2LabsToGo-Eco-Software/Dockerfile
+
+jobs:
+  build_arm64_eco:
+    runs-on: ubuntu-latest
+    steps:
+      # 1) Checkout the requested ref
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      # 2) Enable emulation for multi-arch
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      # 3) Enable Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 4) Login to Docker Hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # 5) Build and push ARM64 image (tags: latest + short SHA)
+      - name: Build and push ARM64 image
+        env:
+          IMAGE_NAME: ${{ inputs.image_name }}
+          CONTEXT_DIR: ${{ inputs.context }}
+          DOCKERFILE: ${{ inputs.dockerfile }}
+        run: |
+          SHORT_SHA="${GITHUB_SHA::7}"
+
+          docker buildx build \
+            --file "${DOCKERFILE}" \
+            --platform linux/arm64 \
+            --push \
+            --tag "${IMAGE_NAME}:latest" \
+            --tag "${IMAGE_NAME}:${SHORT_SHA}" \
+            --label "commit_sha=${GITHUB_SHA}" \
+            "${CONTEXT_DIR}"

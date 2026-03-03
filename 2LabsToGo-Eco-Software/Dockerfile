@@ -1,10 +1,28 @@
-FROM python:3.9 as ocmanagerbase
+# first stage
+FROM python:3.13-trixie
 
-ENV PYTHONUNBUFFERED 1
+# Install system dependencies first
+RUN apt update && apt install -y curl --no-install-recommends
 
-RUN pip install --upgrade pip
+# Add Raspberry Pi repository for picamera2
+RUN echo "deb [signed-by=/etc/apt/keyrings/raspberrypi.gpg] http://archive.raspberrypi.org/debian/ trixie main" | tee /etc/apt/sources.list.d/raspberrypi.list
+RUN curl -sSL https://archive.raspberrypi.org/debian/raspberrypi.gpg.key | gpg --dearmor -o /etc/apt/keyrings/raspberrypi.gpg
+RUN apt update && apt install -y python3-picamera2 --no-install-recommends
 
-RUN apt-get update && apt-get upgrade -y
+# Install pip dependencies
+COPY requirements/base.txt /base_requirements4.txt
+RUN pip install --no-cache-dir -r /base_requirements4.txt
 
-COPY requirements/base.txt /base_requirements.txt
-RUN cat /base_requirements.txt | xargs pip install
+ENV PYTHONUNBUFFERED=1
+
+# Set PYTHONPATH to prefer pip packages over system packages
+ENV PYTHONPATH=/usr/local/lib/python3.13/site-packages:/usr/lib/python3/dist-packages
+
+
+WORKDIR /app
+
+# Debugging commands:
+# docker run -it <image_id> <one of the below commands>
+# python -c "import sys; print('\n'.join(sys.path))"
+# find /usr -name "pykms*"
+# find /usr -name "libcamera*" | grep -E "\.(so|py)$"
