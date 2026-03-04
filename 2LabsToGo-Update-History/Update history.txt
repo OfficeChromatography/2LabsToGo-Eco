@@ -64,3 +64,6 @@ Date: 03-03-2026
 Done: 3D files atomizer optimized
 Concerned: atomizer.f3d (Fusion file), nebulizer_atomizer_part-1.stl, nebulizer_atomizer_part-2.stl, nebulizer_atomizer_washer.stl
 
+Date: 04-03-2026
+Done: Operational qualification updated
+Concerned: Different folders Operational_qualificaction added (Pi4-bullseye, P4-trixie, P5-trixie)
