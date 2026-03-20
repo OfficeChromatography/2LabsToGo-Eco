@@ -1,5 +1,9 @@
 # 2LabsToGo-Eco
 
+# Important Preliminary Note
+<b>In our publication (reference 1) we recommended asking our electronic workshop for a quote on the electronic boards. Unfortunately, that turned out to be very difficult. We therefore recommend contacting Chromnil (https://chromnil.com/), a young start-up also providing the electronic boards or even the 2LabsToGo-Eco ready mounted.<br>
+<br>
+
 ## 2LabsToGo-Eco combines an analytical (high-performance thin-layer chromatography) and a biological (bioassays) laboratory.
 
 ### References:  
