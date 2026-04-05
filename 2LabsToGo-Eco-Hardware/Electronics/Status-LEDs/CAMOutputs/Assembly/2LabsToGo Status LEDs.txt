@@ -1,0 +1,15 @@
+Stückliste exportiert aus C:/Users/wschwack/GitHub/2LabsToGo-Eco/2LabsToGo-Eco-Hardware/Electronics/Status-LEDs/2LabsToGo Status LEDs.sch am 23.03.2026 14:30
+
+Part  Value Device          Package      Description MF MPN OC_FARNELL OC_NEWARK POPULARITY
+LED1  Grün  LEDCHIP-LED0805 CHIP-LED0805 LED                                     68        
+LED2  Grün  LEDCHIP-LED0805 CHIP-LED0805 LED                                     68        
+LED3  Grün  LEDCHIP-LED0805 CHIP-LED0805 LED                                     68        
+LED4  Rot   LEDCHIP-LED0805 CHIP-LED0805 LED                                     68        
+LED5  Rot   LEDCHIP-LED0805 CHIP-LED0805 LED                                     68        
+LED6  Rot   LEDCHIP-LED0805 CHIP-LED0805 LED                                     68        
+LED7  Gelb  LEDCHIP-LED0805 CHIP-LED0805 LED                                     68        
+LED8  Rot   LEDCHIP-LED0805 CHIP-LED0805 LED                                     68        
+LED9  Rot   LEDCHIP-LED0805 CHIP-LED0805 LED                                     68        
+LED10 Rot   LEDCHIP-LED0805 CHIP-LED0805 LED                                     68        
+LED11 Gelb  LEDCHIP-LED0805 CHIP-LED0805 LED                                     68        
+SV1         ML14E           ML14         HARTING            unknown    unknown   0         

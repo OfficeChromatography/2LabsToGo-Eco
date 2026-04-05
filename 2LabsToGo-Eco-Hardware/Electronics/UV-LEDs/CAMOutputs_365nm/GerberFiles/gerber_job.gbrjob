@@ -1,0 +1,24 @@
+{
+    "Header": {
+        "Comment": "All values are metric (mm)",
+        "CreationDate": "2026-03-23T13:35:02Z",
+        "GenerationSoftware": {
+            "Application": "EAGLE",
+            "Vendor": "Autodesk",
+            "Version": "9.6.2"
+        },
+        "Part": "Single"
+    },
+    "Overall": {
+        "BoardThickness": 1.57,
+        "LayerNumber": 2,
+        "Name": {
+            "ProjectId": "UV-LED_365nm_WS_RS_production"
+        },
+        "Owner": "Wolfgang Schwack <wolfgang.schwack@uni-giessen.de>",
+        "Size": {
+            "X": 104,
+            "Y": 20
+        }
+    }
+}
