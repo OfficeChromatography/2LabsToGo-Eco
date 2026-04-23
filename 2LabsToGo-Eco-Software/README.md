@@ -8,7 +8,7 @@ As operation system, Raspberry Pi OS (Debian 13, trixie, 64-bit) is recommended,
 installed by the [Raspberry Pi Imager](https://www.raspberrypi.com/software/) (see reference 3 in 
 this [README](https://github.com/OfficeChromatography/2LabsToGo-Eco/blob/main/README.md)).
 
-Before the next steps, consult the [checklist](https://github.com/OfficeChromatography/2LabsToGo-Eco/blob/main/2LabsToGo-Update-History/checklist.pdf).
+Before the next steps, consult the [checklist](https://github.com/OfficeChromatography/2LabsToGo-Eco/blob/main/2LabsToGo-Update-History/checklist.pdf) and  [Update Assembly Instruction](https://github.com/OfficeChromatography/2LabsToGo-Eco/blob/main/2LabsToGo-Update-History/UpdateAssemblyInstruction.pdf).
 
 To clone the 2LabsToGo-Eco repository, consult this [README](https://github.com/OfficeChromatography/2LabsToGo-Eco/blob/main/README.md).
 
