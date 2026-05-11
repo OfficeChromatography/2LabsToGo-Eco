@@ -35,3 +35,6 @@ To install the software, consult this [README](https://github.com/OfficeChromato
 
 ### 4. Flashing the firmware
 Instructions to flash the firmware, can be found [here](https://github.com/OfficeChromatography/2LabsToGo-Eco/blob/main/2LabsToGo-Eco-Firmware/README.md).
+
+### 5. Updating 2LabsToGo-Eco
+Instructions to update the 2LabsToGo-Eco folder, consult [this instruction folder](https://github.com/OfficeChromatography/2LabsToGo-Eco/tree/main/2LabsToGo-Update-History).

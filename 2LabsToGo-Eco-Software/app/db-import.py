@@ -33,3 +33,11 @@ if os.path.exists("./detection/migrations/0001_initial.py"):
 else:
   print("The file does not exist")
 
+#delete all pyc files
+files = glob.glob('./**/*.pyc', recursive=True)
+
+for f in files:
+    try:
+        os.remove(f)
+    except OSError as e:
+        print("Error: %s : %s" % (f, e.strerror))
