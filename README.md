@@ -11,10 +11,10 @@
 <li>M.C.O. Romero, K. Jakob, J. Schmidt, T. Nimmerfroh, W. Schwack, G.E.
  Morlock, Consolidating two laboratories into the most sustainable lab of the future: 2LabsToGo-Eco,  Analytica Chimica Acta (2025) 1367, 344103 (https://doi.org/10.1016/j.aca.2025.344103).</li>
 <li>A. Haase, W. Schwack, G. Morlock, Humidity control for the 2LabsToGo-Eco, 
-Analytica Chimica Acta (2026), 1382, 344811 (https://doi.org/10.1016/j.aca.2025.344811).</li>
+Analytica Chimica Acta (2026) 1382, 344811 (https://doi.org/10.1016/j.aca.2025.344811).</li>
 <li>W. Schwack, J. Morlock, L. Sing, G. Morlock, Faster Operation of 2LabsToGo-Eco 
  Using Debian 13, Django 5, and Raspberry Pi 5, verified via screening of cannabidiol-containing oils,
- Journal of Planar Chromatography (2026), in revision.</(li>
+ Journal of Planar Chromatography (2026) 39:119–124, (https://doi.org/10.1007/s00764-026-00406-x).</(li>
 </ol>
 This repository contains the folders for the hardware, firmware, and software for 2LabsToGo-Eco.
 For details and instructions consult the given references.
